@@ -101,11 +101,14 @@ const NFA = (() => {
   function makeMap(el, opts = {}) {
     const map = L.map(el, { scrollWheelZoom: false, zoomControl: true, attributionControl: true, minZoom: 7, maxZoom: 19 });
     const attr = '© <a href="https://www.swisstopo.admin.ch" target="_blank" rel="noopener">swisstopo</a>';
-    const grey = L.tileLayer(TILES.grey, { attribution: attr, maxZoom: 19, maxNativeZoom: 18 });
-    const image = L.tileLayer(TILES.image, { attribution: attr, maxZoom: 19 });
+    // swisstopo tiles exist only inside this extent; outside it no tiles are requested (no empty boxes)
+    const extent = L.latLngBounds([45.398181, 5.140242], [48.230651, 11.47757]);
+    const grey = L.tileLayer(TILES.grey, { attribution: attr, maxZoom: 19, maxNativeZoom: 18, bounds: extent });
+    const image = L.tileLayer(TILES.image, { attribution: attr, maxZoom: 19, bounds: extent });
     (opts.imagery ? image : grey).addTo(map);
     L.control.layers({ "Map": grey, "Aerial": image }, null, { position: "topright" }).addTo(map);
-    map.setMaxBounds([[45.6, 5.7], [47.95, 10.7]]);
+    map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
+    map.setMaxBounds(extent);
     map.on("focus", () => map.scrollWheelZoom.enable());
     map.on("blur", () => map.scrollWheelZoom.disable());
     return map;

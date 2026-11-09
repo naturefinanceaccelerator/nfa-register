@@ -742,7 +742,7 @@
  "_source": {
   "repo": "https://github.com/naturefinanceaccelerator/nfa-001-mellingen",
   "file": "https://raw.githubusercontent.com/naturefinanceaccelerator/nfa-001-mellingen/main/nfa-project.json",
-  "origin": "github",
-  "collected": "2026-11-09T06:30Z"
+  "origin": "local",
+  "collected": "2026-11-09T07:48Z"
  }
 }

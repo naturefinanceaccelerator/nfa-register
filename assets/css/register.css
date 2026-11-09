@@ -105,7 +105,8 @@ button { font: inherit; }
 .row h3 { margin: 4px 0 4px; font-size: 22px; font-weight: 500; line-height: 1.2; }
 .row p { margin: 0 0 12px; color: var(--grey-700); font-size: 14px; }
 .meta-line { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--grey-600); }
-.map { height: 560px; border-radius: 8px; overflow: hidden; background: var(--sage-tint); position: sticky; top: 24px; }
+.map { height: 560px; border-radius: 8px; overflow: hidden; background: #f2f2f0; position: sticky; top: 24px; }
+.leaflet-container { background: #f2f2f0; }
 .map.small { height: 100%; min-height: 360px; position: static; }
 .empty { padding: 28px 0; color: var(--grey-500); }
 

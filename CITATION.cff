@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use the NFA Project Register, please cite it as below."
+title: "NFA Project Register"
+type: software
+authors:
+  - family-names: "Häni"
+    given-names: "Matthias"
+    affiliation: "Nature Finance Accelerator"
+version: "0.1"
+date-released: "2026-11-09"
+license: Apache-2.0
+url: "https://naturefinanceaccelerator.github.io/nfa-register/"
+repository-code: "https://github.com/naturefinanceaccelerator/nfa-register"
+contact:
+  - name: "Nature Finance Accelerator"
+    email: register@nfa.ch
