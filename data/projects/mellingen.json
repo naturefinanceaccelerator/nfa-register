@@ -1,0 +1,748 @@
+{
+ "$schema": "https://register.nfa.ch/schema/nfa-project-0.1.schema.json",
+ "schemaVersion": "0.1",
+ "id": "NFA-001",
+ "slug": "mellingen",
+ "name": "Mellingen – Äbereich",
+ "tagline": "Regenerative farm in the Reuss valley, Canton Aargau",
+ "stage": "baseline",
+ "stageNote": "Baseline in preparation. Nothing has been claimed or verified.",
+ "summary": "An organic farm in Aargau's Reuss valley, close to floodplains of national importance, developed as a model for regenerative agriculture. NFA measures how ecological condition changes on the farm against independent reference areas.",
+ "description": [
+  "The Äbereich farm lies in the Reuss valley near Mellingen, close to floodplains of national importance. The farm stays in production. The project focuses on soil building, water retention, extensive grazing and agroforestry on permanently secured land.",
+  "NFA designs the measurement, coordinates the partners, holds the evidence chain and publishes what can be published. The method adapts the open Wallacea Trust methodology to Swiss conditions: a field baseline, repeated measurements over time, independent review.",
+  "Change on the farm is read against several lightly sampled reference areas, so the effect of the project can be separated from what happens in the wider landscape anyway."
+ ],
+ "location": {
+  "countries": [
+   "CH"
+  ],
+  "cantons": [
+   "AG"
+  ],
+  "municipality": "Mellingen",
+  "point": [
+   8.283,
+   47.417
+  ],
+  "pointPrecision": "municipality",
+  "boundary": null,
+  "boundaryStatus": "pending",
+  "boundaryNote": "The surveyed project boundary (CH1903+/LV95, EPSG:2056) will be added as geo/boundary.geojson. Until then the map shows the municipality only.",
+  "areaHa": 30,
+  "areaPrecision": "approximate"
+ },
+ "ecosystem": [
+  "Farmland",
+  "Ponds",
+  "Hedgerows",
+  "Forest edge"
+ ],
+ "landUse": "Organic farming, remains in production",
+ "method": {
+  "name": "NFA MRV method",
+  "version": "Concept v8",
+  "basis": "Wallacea Trust methodology, adapted for Swiss conditions",
+  "design": "Baseline (t0) on the project area plus several lightly sampled reference areas",
+  "review": "Biodiversity Futures Initiative (BFI) Stage 1 design review in preparation"
+ },
+ "dates": {
+  "projectStart": "2026",
+  "baselineT0": null,
+  "baselineT0Note": "Field baseline planned for the 2027 season",
+  "nextVerification": null,
+  "registered": "2026-11-08",
+  "lastUpdated": "2026-11-09"
+ },
+ "images": [
+  {
+   "src": "data/projects/mellingen/images/hero.jpg",
+   "alt": "Aerial view of the Mellingen site: farmland, forest and the Reuss",
+   "credit": "Nature Finance Accelerator",
+   "licence": "CC-BY-4.0"
+  }
+ ],
+ "organisations": [
+  {
+   "id": "nfa",
+   "name": "Nature Finance Accelerator",
+   "role": "Project lead, measurement design, register",
+   "type": "Swiss public-benefit foundation",
+   "url": "https://nfa.ch",
+   "ror": null,
+   "logo": null,
+   "logoConfirmed": false
+  },
+  {
+   "id": "farm",
+   "name": "Äbereich farm",
+   "role": "Land manager",
+   "type": "Organic farm",
+   "url": null,
+   "note": "People on the farm are named only with their consent. Farm business data are not published.",
+   "logo": null,
+   "logoConfirmed": false
+  },
+  {
+   "id": "pro-natura",
+   "name": "Pro Natura Aargau",
+   "role": "Conservation partner, amphibian monitoring",
+   "type": "Conservation organisation",
+   "url": "https://www.pronatura-ag.ch",
+   "logo": null,
+   "logoConfirmed": false
+  },
+  {
+   "id": "belian",
+   "name": "belian.earth",
+   "role": "Independent reference areas",
+   "type": "Remote sensing, analysis",
+   "url": "https://belian.earth",
+   "logo": null,
+   "logoConfirmed": false
+  },
+  {
+   "id": "svarmi",
+   "name": "Svarmi",
+   "role": "Drone LiDAR, multispectral flights",
+   "type": "Measurement provider",
+   "url": "https://svarmi.com",
+   "logo": null,
+   "logoConfirmed": false
+  },
+  {
+   "id": "dnair",
+   "name": "DNAir",
+   "role": "Airborne environmental DNA",
+   "type": "Measurement provider",
+   "url": "https://www.dnair.ch",
+   "logo": null,
+   "logoConfirmed": false
+  },
+  {
+   "id": "synature",
+   "name": "Synature",
+   "role": "Bioacoustic monitoring",
+   "type": "Measurement provider",
+   "url": "https://www.synature.ch",
+   "logo": null,
+   "logoConfirmed": false
+  },
+  {
+   "id": "climate-farmers",
+   "name": "Climate Farmers",
+   "role": "Soil sampling, regenerative agriculture training",
+   "type": "Agronomy partner",
+   "url": "https://www.climatefarmers.org",
+   "logo": "data/projects/mellingen/logos/climate-farmers.png",
+   "logoConfirmed": true,
+   "logoConfirmedOn": "2026-11-09"
+  },
+  {
+   "id": "creanatira",
+   "name": "creaNatira",
+   "role": "Project reporting",
+   "type": "Nature consultancy",
+   "url": null,
+   "logo": null,
+   "logoConfirmed": false
+  },
+  {
+   "id": "vogelwarte",
+   "name": "Swiss Ornithological Institute (Vogelwarte)",
+   "role": "Pilot partner – role to be confirmed",
+   "type": "Research institute",
+   "url": "https://www.vogelwarte.ch",
+   "logo": null,
+   "logoConfirmed": false
+  },
+  {
+   "id": "agricultura-regeneratio",
+   "name": "agricultura regeneratio",
+   "role": "Pilot partner – role to be confirmed",
+   "type": "Regenerative agriculture",
+   "url": null,
+   "logo": null,
+   "logoConfirmed": false
+  },
+  {
+   "id": "datamars-foundation",
+   "name": "Datamars Sustainability Foundation",
+   "role": "Pilot partner – role to be confirmed",
+   "type": "Foundation",
+   "url": null,
+   "logo": null,
+   "logoConfirmed": false
+  }
+ ],
+ "people": [
+  {
+   "name": "Matthias Häni",
+   "organisation": "nfa",
+   "role": "Chief Scientist, Head of MRV",
+   "orcid": null,
+   "consent": true
+  }
+ ],
+ "measurements": [
+  {
+   "id": "m-habitat",
+   "metric": "Habitat structure",
+   "group": "core",
+   "structural": true,
+   "method": "Drone LiDAR plus multispectral flights; swisstopo LiDAR, Habitat Map of Switzerland",
+   "provider": [
+    "svarmi",
+    "nfa"
+   ],
+   "frequency": "Baseline, then per verification event",
+   "status": "planned",
+   "datasets": [
+    "ds-drone",
+    "ds-remote"
+   ]
+  },
+  {
+   "id": "m-amphibians",
+   "metric": "Amphibians",
+   "group": "core",
+   "method": "Field survey protocol, existing monitoring series, passive acoustics",
+   "provider": [
+    "pro-natura",
+    "synature"
+   ],
+   "frequency": "Annual survey season",
+   "status": "in-progress",
+   "statusNote": "Existing records being compiled (November 2026)",
+   "datasets": [
+    "ds-amphibians",
+    "ds-acoustics"
+   ]
+  },
+  {
+   "id": "m-birds",
+   "metric": "Breeding birds",
+   "group": "core",
+   "method": "Breeding bird survey, passive acoustics",
+   "provider": [
+    "synature"
+   ],
+   "frequency": "Annual breeding season",
+   "status": "planned",
+   "datasets": [
+    "ds-birds",
+    "ds-acoustics"
+   ]
+  },
+  {
+   "id": "m-butterflies",
+   "metric": "Butterflies plus grasshoppers",
+   "group": "core",
+   "method": "Transect counts",
+   "provider": [],
+   "providerNote": "To be appointed",
+   "frequency": "Annual season",
+   "status": "planned",
+   "datasets": [
+    "ds-insects"
+   ]
+  },
+  {
+   "id": "m-plants",
+   "metric": "Vascular plants",
+   "group": "core",
+   "method": "Vegetation relevés",
+   "provider": [],
+   "providerNote": "To be appointed",
+   "frequency": "Baseline, then per verification event",
+   "status": "planned",
+   "datasets": [
+    "ds-plants"
+   ]
+  },
+  {
+   "id": "m-edna",
+   "metric": "Airborne eDNA",
+   "group": "context",
+   "method": "Four air samplers: forest, farm, nature reserve, reference",
+   "provider": [
+    "dnair"
+   ],
+   "frequency": "Per filter change",
+   "status": "in-progress",
+   "datasets": [
+    "ds-edna"
+   ]
+  },
+  {
+   "id": "m-soil",
+   "metric": "Soil condition",
+   "group": "context",
+   "method": "Soil sampling campaigns",
+   "provider": [
+    "climate-farmers"
+   ],
+   "frequency": "Per campaign",
+   "status": "in-progress",
+   "statusNote": "Sampling from October 2026",
+   "datasets": [
+    "ds-soil"
+   ]
+  },
+  {
+   "id": "m-reference",
+   "metric": "Reference areas",
+   "group": "design",
+   "method": "Selection of comparable untreated areas",
+   "provider": [
+    "belian"
+   ],
+   "frequency": "Once, then yearly",
+   "status": "in-progress",
+   "datasets": [
+    "ds-reference"
+   ]
+  }
+ ],
+ "datasets": [
+  {
+   "id": "ds-boundary",
+   "title": "Project boundary",
+   "provider": [
+    "nfa"
+   ],
+   "format": "GeoJSON",
+   "crs": "EPSG:2056",
+   "repository": "Register",
+   "doi": null,
+   "url": null,
+   "licence": "CC-BY-4.0",
+   "disclosure": "public",
+   "status": "pending"
+  },
+  {
+   "id": "ds-drone",
+   "title": "Drone LiDAR plus multispectral baseline",
+   "provider": [
+    "svarmi"
+   ],
+   "creators": [
+    "Matthias Häni"
+   ],
+   "format": "LAZ, GeoTIFF",
+   "crs": "EPSG:2056",
+   "repository": "OpenTopography",
+   "repositoryUrl": "https://opentopography.org",
+   "doi": null,
+   "url": null,
+   "licence": "CC-BY-4.0",
+   "disclosure": "public",
+   "status": "pending",
+   "note": "All NFA drone data are published on OpenTopography."
+  },
+  {
+   "id": "ds-remote",
+   "title": "Satellite time series (Sentinel-2, Sentinel-1), 2017 onwards",
+   "provider": [
+    "nfa"
+   ],
+   "format": "CSV, Cloud-Optimized GeoTIFF",
+   "crs": "EPSG:2056",
+   "repository": "Zenodo",
+   "repositoryUrl": "https://zenodo.org",
+   "doi": null,
+   "url": null,
+   "licence": "CC-BY-4.0",
+   "disclosure": "public",
+   "status": "pending",
+   "note": "Derived indices per site and date, project area against reference areas."
+  },
+  {
+   "id": "ds-amphibians",
+   "title": "Amphibian records",
+   "provider": [
+    "pro-natura"
+   ],
+   "format": "Darwin Core",
+   "crs": "EPSG:2056",
+   "repository": "InfoSpecies (info fauna – karch), then GBIF",
+   "repositoryUrl": "https://www.infospecies.ch",
+   "doi": null,
+   "url": null,
+   "licence": "CC-BY-4.0",
+   "disclosure": "public",
+   "status": "in-progress",
+   "note": "Exact locations of sensitive species are published on a coarser grid."
+  },
+  {
+   "id": "ds-birds",
+   "title": "Breeding bird records",
+   "provider": [
+    "synature"
+   ],
+   "format": "Darwin Core",
+   "crs": "EPSG:2056",
+   "repository": "InfoSpecies, then GBIF",
+   "repositoryUrl": "https://www.infospecies.ch",
+   "doi": null,
+   "url": null,
+   "licence": "CC-BY-4.0",
+   "disclosure": "public",
+   "status": "pending"
+  },
+  {
+   "id": "ds-insects",
+   "title": "Butterfly plus grasshopper records",
+   "provider": [],
+   "format": "Darwin Core",
+   "crs": "EPSG:2056",
+   "repository": "InfoSpecies (info fauna – CSCF), then GBIF",
+   "repositoryUrl": "https://www.infospecies.ch",
+   "doi": null,
+   "url": null,
+   "licence": "CC-BY-4.0",
+   "disclosure": "public",
+   "status": "pending"
+  },
+  {
+   "id": "ds-plants",
+   "title": "Vegetation relevés",
+   "provider": [],
+   "format": "Darwin Core",
+   "crs": "EPSG:2056",
+   "repository": "InfoSpecies (Info Flora), then GBIF",
+   "repositoryUrl": "https://www.infoflora.ch",
+   "doi": null,
+   "url": null,
+   "licence": "CC-BY-4.0",
+   "disclosure": "public",
+   "status": "pending"
+  },
+  {
+   "id": "ds-acoustics",
+   "title": "Bioacoustic detections plus indices",
+   "provider": [
+    "synature"
+   ],
+   "format": "CSV",
+   "crs": "EPSG:2056",
+   "repository": "Zenodo",
+   "repositoryUrl": "https://zenodo.org",
+   "doi": null,
+   "url": null,
+   "licence": "CC-BY-4.0",
+   "disclosure": "public",
+   "status": "pending"
+  },
+  {
+   "id": "ds-acoustics-raw",
+   "title": "Raw audio recordings",
+   "provider": [
+    "synature"
+   ],
+   "format": "WAV",
+   "repository": null,
+   "doi": null,
+   "url": null,
+   "licence": null,
+   "disclosure": "not-disclosed",
+   "reason": "Recorders can capture human speech (personal data under the revised Data Protection Act). Detections are published instead.",
+   "status": "in-progress"
+  },
+  {
+   "id": "ds-edna",
+   "title": "Airborne eDNA detections",
+   "provider": [
+    "dnair"
+   ],
+   "format": "CSV, FASTQ",
+   "repository": "Zenodo",
+   "repositoryUrl": "https://zenodo.org",
+   "doi": null,
+   "url": null,
+   "licence": null,
+   "disclosure": "on-request",
+   "reason": "Data agreement in preparation. Planned for open release once it is signed.",
+   "status": "in-progress"
+  },
+  {
+   "id": "ds-soil",
+   "title": "Soil sampling results",
+   "provider": [
+    "climate-farmers"
+   ],
+   "format": "CSV",
+   "crs": "EPSG:2056",
+   "repository": "Zenodo",
+   "repositoryUrl": "https://zenodo.org",
+   "doi": null,
+   "url": null,
+   "licence": null,
+   "disclosure": "on-request",
+   "reason": "Farm-level data. Site-level results will be published.",
+   "status": "in-progress"
+  },
+  {
+   "id": "ds-reference",
+   "title": "Reference area coordinates",
+   "provider": [
+    "belian"
+   ],
+   "format": "GeoPackage",
+   "crs": "EPSG:2056",
+   "repository": null,
+   "doi": null,
+   "url": null,
+   "licence": "Licensed",
+   "disclosure": "on-request",
+   "reason": "Licensed data, not redistributed.",
+   "status": "in-progress"
+  }
+ ],
+ "referenceLayers": [
+  {
+   "title": "SWISSIMAGE orthophoto",
+   "holder": "swisstopo",
+   "url": "https://www.swisstopo.admin.ch/en/orthoimage-swissimage-10",
+   "licence": "Swiss OGD"
+  },
+  {
+   "title": "swissSURFACE3D LiDAR point cloud",
+   "holder": "swisstopo",
+   "url": "https://www.swisstopo.admin.ch/en/height-model-swisssurface3d",
+   "licence": "Swiss OGD"
+  },
+  {
+   "title": "swissALTI3D terrain model",
+   "holder": "swisstopo",
+   "url": "https://www.swisstopo.admin.ch/en/height-model-swissalti3d",
+   "licence": "Swiss OGD"
+  },
+  {
+   "title": "Habitat Map of Switzerland",
+   "holder": "WSL",
+   "url": "https://www.envidat.ch",
+   "licence": "See EnviDat"
+  },
+  {
+   "title": "Sentinel-1, Sentinel-2",
+   "holder": "Copernicus",
+   "url": "https://dataspace.copernicus.eu",
+   "licence": "Copernicus open licence"
+  }
+ ],
+ "agreements": [
+  {
+   "id": "ag-dnair",
+   "title": "Data sovereignty agreement",
+   "type": "Data agreement",
+   "parties": [
+    "nfa",
+    "dnair"
+   ],
+   "status": "draft",
+   "signed": null,
+   "term": null,
+   "dataLicence": "To be agreed",
+   "claimRights": "NFA may use plus publish project data",
+   "fees": "not-disclosed",
+   "disclosure": "on-request",
+   "reason": "Key terms published here once signed."
+  },
+  {
+   "id": "ag-farm",
+   "title": "Land use plus data agreement",
+   "type": "Land agreement",
+   "parties": [
+    "nfa",
+    "farm"
+   ],
+   "status": "pending",
+   "signed": null,
+   "term": null,
+   "dataLicence": null,
+   "claimRights": null,
+   "fees": "not-disclosed",
+   "disclosure": "on-request",
+   "reason": "Personal data of the landowner are not published."
+  },
+  {
+   "id": "ag-pro-natura",
+   "title": "Data sharing: amphibian monitoring series",
+   "type": "Data agreement",
+   "parties": [
+    "nfa",
+    "pro-natura"
+   ],
+   "status": "pending",
+   "signed": null,
+   "term": null,
+   "dataLicence": null,
+   "claimRights": null,
+   "fees": "not-disclosed",
+   "disclosure": "on-request"
+  },
+  {
+   "id": "ag-svarmi",
+   "title": "Drone flights plus data publication",
+   "type": "Service agreement",
+   "parties": [
+    "nfa",
+    "svarmi"
+   ],
+   "status": "pending",
+   "signed": null,
+   "term": null,
+   "dataLicence": "CC-BY-4.0",
+   "claimRights": "Open publication on OpenTopography",
+   "fees": "not-disclosed",
+   "disclosure": "on-request"
+  },
+  {
+   "id": "ag-synature",
+   "title": "Bioacoustic monitoring",
+   "type": "Service agreement",
+   "parties": [
+    "nfa",
+    "synature"
+   ],
+   "status": "pending",
+   "fees": "not-disclosed",
+   "disclosure": "on-request"
+  },
+  {
+   "id": "ag-climate-farmers",
+   "title": "Soil sampling",
+   "type": "Service agreement",
+   "parties": [
+    "nfa",
+    "climate-farmers"
+   ],
+   "status": "pending",
+   "fees": "not-disclosed",
+   "disclosure": "on-request"
+  },
+  {
+   "id": "ag-belian",
+   "title": "Reference areas",
+   "type": "Data licence",
+   "parties": [
+    "nfa",
+    "belian"
+   ],
+   "status": "pending",
+   "dataLicence": "Licensed, not redistributed",
+   "fees": "not-disclosed",
+   "disclosure": "on-request"
+  }
+ ],
+ "documents": [
+  {
+   "title": "NFA MRV method – concept",
+   "version": "v8",
+   "date": "2026-10",
+   "type": "Method",
+   "url": null,
+   "disclosure": "on-request",
+   "reason": "Published here once the method reaches v1.0."
+  },
+  {
+   "title": "BFI Stage 1 submission",
+   "version": null,
+   "date": null,
+   "type": "Review",
+   "url": null,
+   "disclosure": "public",
+   "status": "in-progress"
+  },
+  {
+   "title": "Project report – activity reporting",
+   "version": null,
+   "date": null,
+   "type": "Report",
+   "author": "creanatira",
+   "url": null,
+   "disclosure": "public",
+   "status": "in-progress"
+  },
+  {
+   "title": "Pilot information",
+   "version": null,
+   "date": null,
+   "type": "Brochure",
+   "url": null,
+   "disclosure": "public",
+   "status": "pending"
+  }
+ ],
+ "timeline": [
+  {
+   "date": "2026-10",
+   "event": "Measurement basket fixed in MRV concept v8",
+   "status": "done"
+  },
+  {
+   "date": "2026-10",
+   "event": "Soil sampling plus farmer training start",
+   "status": "ongoing"
+  },
+  {
+   "date": "2026-11",
+   "event": "Drone data route decided: OpenTopography",
+   "status": "done"
+  },
+  {
+   "date": "2026-11",
+   "event": "Existing amphibian records compiled",
+   "status": "ongoing"
+  },
+  {
+   "date": "2026-11",
+   "event": "Entry created in the NFA Project Register",
+   "status": "done"
+  },
+  {
+   "date": "2026-Q4",
+   "event": "BFI Stage 1 design review submitted",
+   "status": "ongoing"
+  },
+  {
+   "date": "2027",
+   "event": "Field baseline (t0): amphibians, birds, butterflies, grasshoppers, plants",
+   "status": "planned"
+  },
+  {
+   "date": "2027",
+   "event": "Baseline datasets published with DOIs",
+   "status": "planned"
+  }
+ ],
+ "links": [
+  {
+   "label": "Nature Finance Accelerator",
+   "url": "https://nfa.ch"
+  },
+  {
+   "label": "Mellingen on map.geo.admin.ch",
+   "url": "https://map.geo.admin.ch/?lang=en&swisssearch=Mellingen&bgLayer=ch.swisstopo.swissimage"
+  }
+ ],
+ "contact": "register@nfa.ch",
+ "licence": "CC-BY-4.0",
+ "changelog": [
+  {
+   "date": "2026-11-08",
+   "change": "Entry created."
+  },
+  {
+   "date": "2026-11-09",
+   "change": "Climate Farmers logo use confirmed."
+  }
+ ],
+ "_source": {
+  "repo": "https://github.com/naturefinanceaccelerator/nfa-001-mellingen",
+  "file": "https://raw.githubusercontent.com/naturefinanceaccelerator/nfa-001-mellingen/main/nfa-project.json",
+  "origin": "local",
+  "collected": "2026-11-09T06:22Z"
+ }
+}

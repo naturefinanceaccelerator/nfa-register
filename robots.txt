@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /
+# At launch replace with:
+# User-agent: *
+# Allow: /

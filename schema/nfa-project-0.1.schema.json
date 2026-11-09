@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://register.nfa.ch/schema/nfa-project-0.1.schema.json",
+  "title": "NFA project file",
+  "description": "One file per project (nfa-project.json), kept in the project's own repository. The NFA Project Register collects these files and displays them.",
+  "type": "object",
+  "required": ["schemaVersion", "id", "slug", "name", "stage", "summary", "location", "organisations", "measurements", "datasets", "agreements", "contact", "dates"],
+  "$defs": {
+    "disclosure": {
+      "description": "public = shown in full; on-request = entry shown, content on request via the contact address; not-disclosed = entry shown with a reason only.",
+      "enum": ["public", "on-request", "not-disclosed"]
+    },
+    "status": { "enum": ["planned", "pending", "in-progress", "available", "draft", "signed", "ended"] },
+    "orgRefs": { "type": "array", "items": { "type": "string" } }
+  },
+  "properties": {
+    "schemaVersion": { "const": "0.1" },
+    "id": { "type": "string", "pattern": "^NFA-[0-9]{3,}$", "description": "Register ID: NFA- plus a running number across all projects (NFA-001, NFA-002 ...). Never reused, never changed." },
+    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "name": { "type": "string" },
+    "tagline": { "type": "string" },
+    "stage": { "enum": ["scoping", "design", "baseline", "monitoring", "verified", "closed"] },
+    "stageNote": { "type": "string" },
+    "summary": { "type": "string", "maxLength": 400 },
+    "description": { "type": "array", "items": { "type": "string" } },
+    "location": {
+      "type": "object",
+      "required": ["countries", "cantons", "point"],
+      "properties": {
+        "countries": { "type": "array", "items": { "type": "string", "pattern": "^[A-Z]{2}$" }, "minItems": 1, "description": "ISO 3166-1 alpha-2" },
+        "cantons": { "type": "array", "items": { "type": "string" }, "description": "Swiss canton codes (AG, GR ...); empty outside Switzerland" },
+        "municipality": { "type": "string" },
+        "point": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2, "description": "[longitude, latitude], WGS84" },
+        "pointPrecision": { "enum": ["exact", "site", "municipality", "region"] },
+        "boundary": { "type": ["string", "null"], "description": "Relative path to a GeoJSON file in the project repository" },
+        "boundaryStatus": { "enum": ["surveyed", "indicative", "pending"] },
+        "boundaryNote": { "type": "string" },
+        "areaHa": { "type": ["number", "null"] },
+        "areaPrecision": { "enum": ["surveyed", "approximate"] }
+      }
+    },
+    "ecosystem": { "type": "array", "items": { "type": "string" } },
+    "landUse": { "type": "string" },
+    "method": { "type": "object" },
+    "dates": {
+      "type": "object",
+      "required": ["registered", "lastUpdated"],
+      "properties": {
+        "registered": { "type": "string", "format": "date" },
+        "lastUpdated": { "type": "string", "format": "date" }
+      }
+    },
+    "images": {
+      "type": "array",
+      "items": { "type": "object", "required": ["src", "alt"], "properties": { "src": { "type": "string" }, "alt": { "type": "string" }, "credit": { "type": "string" }, "licence": { "type": "string" } } }
+    },
+    "organisations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "role"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "role": { "type": "string" },
+          "type": { "type": "string" },
+          "url": { "type": ["string", "null"] },
+          "ror": { "type": ["string", "null"] },
+          "logo": { "type": ["string", "null"] },
+          "logoConfirmed": { "type": "boolean", "description": "Logo shown only when true (written confirmation received)" },
+          "logoConfirmedOn": { "type": ["string", "null"], "format": "date", "description": "Date of the written confirmation. The confirmation itself is kept internally, not in the repository." }
+        }
+      }
+    },
+    "people": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "consent"],
+        "properties": {
+          "name": { "type": "string" },
+          "organisation": { "type": "string" },
+          "role": { "type": "string" },
+          "orcid": { "type": ["string", "null"] },
+          "consent": { "type": "boolean", "description": "Name shown only when true" }
+        }
+      }
+    },
+    "measurements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "metric", "group", "status"],
+        "properties": {
+          "group": { "enum": ["core", "context", "design"] },
+          "provider": { "$ref": "#/$defs/orgRefs" },
+          "status": { "$ref": "#/$defs/status" },
+          "datasets": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "datasets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "disclosure", "status"],
+        "properties": {
+          "provider": { "$ref": "#/$defs/orgRefs" },
+          "doi": { "type": ["string", "null"] },
+          "url": { "type": ["string", "null"] },
+          "licence": { "type": ["string", "null"] },
+          "disclosure": { "$ref": "#/$defs/disclosure" },
+          "reason": { "type": "string" },
+          "status": { "$ref": "#/$defs/status" }
+        }
+      }
+    },
+    "agreements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "parties", "status", "disclosure"],
+        "properties": {
+          "parties": { "$ref": "#/$defs/orgRefs" },
+          "status": { "$ref": "#/$defs/status" },
+          "fees": { "type": ["string", "null"] },
+          "disclosure": { "$ref": "#/$defs/disclosure" },
+          "url": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "documents": {
+      "type": "array",
+      "items": { "type": "object", "required": ["title", "disclosure"], "properties": { "disclosure": { "$ref": "#/$defs/disclosure" } } }
+    },
+    "timeline": {
+      "type": "array",
+      "items": { "type": "object", "required": ["date", "event", "status"], "properties": { "status": { "enum": ["done", "ongoing", "planned"] } } }
+    },
+    "contact": { "type": "string", "format": "email" },
+    "licence": { "type": "string" },
+    "changelog": { "type": "array", "items": { "type": "object", "required": ["date", "change"] } }
+  }
+}

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How it works – NFA Project Register</title>
+<meta name="robots" content="noindex, nofollow"><!-- remove at launch -->
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/css/register.css">
+</head>
+<body>
+
+<nav class="topbar on-light">
+  <a class="brand" href="index.html"><img src="assets/img/logo-nfa-ink.png" alt="Nature Finance Accelerator"><span>Project<br>Register</span></a>
+  <div class="pill-nav">
+    <a href="index.html">Projects</a>
+    <a href="about.html" class="on">How it works</a>
+  </div>
+  <a class="ext" href="https://nfa.ch">nfa.ch ↗</a>
+</nav>
+
+<main>
+  <div class="wrap p-head">
+    <div class="label">About the register</div>
+    <h1>How the register works</h1>
+    <p class="tag">A public catalogue of NFA nature projects. It shows what each project measures, who measures it, where the data are held, which agreements apply.</p>
+  </div>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="opener"><div class="label">Data flow</div><h2>Seven steps</h2></div>
+      <div class="flow">
+        <div><b>Sources</b><span>Field surveys, audio plus cameras, eDNA, remote sensing, public monitoring, public data, corporate data.</span></div>
+        <div><b>In-house analysis</b><span>Analysis per data source. Protocols plus tools fit to each data type (Python, R, QGIS), AI-assisted checks, versioned scripts, research partners.</span></div>
+        <div><b>Open archives</b><span>Zenodo by default, one DOI per release. PANGAEA, EnviDat where they fit. OpenTopography for all drone data. Figshare only if a journal asks.</span></div>
+        <div><b>Swiss data system</b><span>Species records go to the InfoSpecies data centres, which validate them plus pass them on to GBIF. Dataset metadata go to opendata.swiss.</span></div>
+        <div class="here"><b>NFA register</b><span>Each project keeps one project file in its own GitHub repository. The register collects these files every night plus publishes them here.</span></div>
+        <div><b>Outputs</b><span>Finance dashboards, funder reports, verification packages, OECM evidence.</span></div>
+        <div><b>Users</b><span>FOEN, cantons, funders, BFI reviewers, Scientific Data, the public.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="openness">
+    <div class="wrap">
+      <div class="opener"><div class="label">Disclosure rules</div><h2>Open by default, closed by exception</h2>
+        <p>Every dataset, agreement plus document is listed, whatever its level. Exceptions carry a reason.</p></div>
+      <div class="levels">
+        <div><div class="access public"><span class="k">Public</span></div><h3>Shown in full</h3><p>Description, licence plus a link or DOI.</p></div>
+        <div><div class="access on-request"><span class="k">On request</span></div><h3>Listed, content on request</h3><p>Parties, type, date plus status are shown. Write to <a href="mailto:register@nfa.ch">register@nfa.ch</a>.</p></div>
+        <div><div class="access not-disclosed"><span class="k">Not disclosed</span></div><h3>Listed with a reason</h3><p>One line says why the content stays closed.</p></div>
+      </div>
+      <div class="prose" style="margin-top:56px">
+        <h2>What stays closed</h2>
+        <ul>
+          <li>Fees plus other commercial terms of agreements.</li>
+          <li>Personal data without consent (revised Federal Act on Data Protection, revDSG). People are named only when they agree.</li>
+          <li>Exact sites of sensitive species: published on a coarser grid.</li>
+          <li>Raw audio, which can capture human speech. Detections are published instead.</li>
+          <li>Licensed third-party data that may not be redistributed.</li>
+        </ul>
+        <h2>Agreements</h2>
+        <p>For every agreement the register shows the parties, type, status, data licence, claim rights, term plus signing date. The signed document itself goes out on request. Partner logos are shown once the partner has confirmed their use in writing.</p>
+        <p>Funders get time-limited early access where agreed.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="standards">
+    <div class="wrap">
+      <div class="opener"><div class="label">Standards</div><h2>Identifiers plus formats</h2></div>
+      <dl class="kv" style="max-width:900px">
+        <dt>Datasets</dt><dd>DOI per release (Zenodo, PANGAEA, EnviDat, OpenTopography)</dd>
+        <dt>People</dt><dd>ORCID</dd>
+        <dt>Organisations</dt><dd>ROR</dd>
+        <dt>Metadata export</dt><dd><a href="data/catalog.rdf">DCAT-AP CH</a> for opendata.swiss. Only public datasets with a DOI or link are exported.</dd>
+        <dt>Species records</dt><dd>Darwin Core, via the InfoSpecies data centres</dd>
+        <dt>Coordinates</dt><dd>CH1903+/LV95 (EPSG:2056) at source; WGS84 for the web map; precision stated per project</dd>
+        <dt>Project file</dt><dd><a href="schema/nfa-project-0.1.schema.json">JSON Schema v0.1</a></dd>
+        <dt>Versioning</dt><dd>Every change is a Git commit in the project repository. Tagged releases of the register can be archived with a DOI.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" id="add">
+    <div class="wrap">
+      <div class="opener"><div class="label">Add a project</div><h2>One repository per project</h2></div>
+      <div class="prose">
+        <ol>
+          <li>Take the next free number: IDs count upwards across all projects (<code>NFA-001</code>, <code>NFA-002</code> …), are never reused and never change. Canton plus country go in the project file, not in the ID.</li>
+          <li>Create a public repository in the <a href="https://github.com/naturefinanceaccelerator" target="_blank" rel="noopener">naturefinanceaccelerator</a> organisation named ID plus short name, e.g. <code>nfa-001-mellingen</code>, with the topic <code>nfa-project</code>.</li>
+          <li>Add <code>nfa-project.json</code>, following the <a href="schema/nfa-project-0.1.schema.json">schema</a>. The <a href="https://github.com/naturefinanceaccelerator/nfa-001-mellingen" target="_blank" rel="noopener">Mellingen repository</a> is the worked example.</li>
+          <li>Put photos in <code>images/</code>, logos in <code>logos/</code>, the boundary in <code>geo/boundary.geojson</code>.</li>
+          <li>Add one line for the repository to <code>registry/sources.json</code> in the register repository.</li>
+          <li>The register collects it at the next nightly run. Errors are listed in the workflow log; the last good version stays online.</li>
+        </ol>
+        <p>Questions: <a href="mailto:register@nfa.ch">register@nfa.ch</a></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="footer"></footer>
+<script src="assets/js/common.js"></script>
+</body>
+</html>

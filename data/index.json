@@ -1,0 +1,58 @@
+{
+ "register": "NFA Project Register",
+ "schemaVersion": "0.1",
+ "generated": "2026-11-09",
+ "totals": {
+  "projects": 1,
+  "hectares": 30,
+  "measurements": 8,
+  "datasets": 12,
+  "agreements": 7,
+  "public": 11,
+  "items": 23
+ },
+ "projects": [
+  {
+   "id": "NFA-001",
+   "slug": "mellingen",
+   "name": "Mellingen – Äbereich",
+   "tagline": "Regenerative farm in the Reuss valley, Canton Aargau",
+   "stage": "baseline",
+   "summary": "An organic farm in Aargau's Reuss valley, close to floodplains of national importance, developed as a model for regenerative agriculture. NFA measures how ecological condition changes on the farm against independent reference areas.",
+   "cantons": [
+    "AG"
+   ],
+   "countries": [
+    "CH"
+   ],
+   "municipality": "Mellingen",
+   "point": [
+    8.283,
+    47.417
+   ],
+   "areaHa": 30,
+   "areaPrecision": "approximate",
+   "ecosystem": [
+    "Farmland",
+    "Ponds",
+    "Hedgerows",
+    "Forest edge"
+   ],
+   "image": "data/projects/mellingen/images/hero.jpg",
+   "imageAlt": "Aerial view of the Mellingen site: farmland, forest and the Reuss",
+   "counts": {
+    "measurements": 8,
+    "datasets": 12,
+    "datasetsAvailable": 0,
+    "agreements": 7,
+    "organisations": 12
+   },
+   "disclosure": {
+    "public": 11,
+    "on-request": 11,
+    "not-disclosed": 1
+   },
+   "lastUpdated": "2026-11-09"
+  }
+ ]
+}

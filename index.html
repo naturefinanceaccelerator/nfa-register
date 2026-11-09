@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NFA Project Register</title>
+<meta name="description" content="Open records of Nature Finance Accelerator projects: what is measured, by whom, where the data are held, which agreements apply.">
+<meta name="robots" content="noindex, nofollow"><!-- remove at launch -->
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="assets/css/register.css">
+<link rel="alternate" type="application/rdf+xml" title="DCAT-AP CH catalogue" href="data/catalog.rdf">
+</head>
+<body>
+
+<header class="hero">
+  <img src="assets/img/hero.jpg" alt="" aria-hidden="true">
+  <nav class="topbar on-dark">
+    <a class="brand" href="index.html"><img src="assets/img/logo-nfa-white.png" alt="Nature Finance Accelerator"><span>Project<br>Register</span></a>
+    <div class="pill-nav">
+      <a href="index.html" class="on">Projects</a>
+      <a href="about.html">How it works</a>
+    </div>
+    <a class="ext" href="https://nfa.ch">nfa.ch ↗</a>
+  </nav>
+  <div class="hero-body">
+    <div style="flex: 1 1 560px; min-width: 0">
+      <div class="wip" id="wip" hidden>Work in progress <span></span></div>
+      <h1>Open records<br>for nature projects</h1>
+      <p>Every NFA project in one register: what is measured, who measures it, where the data are held, which agreements apply. Open by default, closed by exception, exceptions stated.</p>
+    </div>
+    <a class="hero-card" id="latest" href="#projects" hidden></a>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="figures" id="figures" aria-label="Register in figures"></div>
+  </div>
+
+  <section class="section" id="projects">
+    <div class="wrap">
+      <div class="opener">
+        <div class="label">Projects</div>
+        <h2>All registered projects</h2>
+      </div>
+      <div class="finder">
+        <div>
+          <div class="filters">
+            <label class="sr" for="q">Search</label>
+            <input id="q" type="search" placeholder="Search name, place, partner">
+            <label class="sr" for="fCanton">Canton</label>
+            <select id="fCanton"><option value="">All cantons</option></select>
+            <label class="sr" for="fStage">Stage</label>
+            <select id="fStage"><option value="">All stages</option></select>
+          </div>
+          <div class="rows" id="rows"></div>
+        </div>
+        <div class="map" id="map" role="region" aria-label="Map of projects"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="opener">
+        <div class="label">How it works</div>
+        <h2>From the field to the register</h2>
+        <p>The register is a catalogue. It holds metadata plus links. The data stay in open archives, each with its own DOI.</p>
+      </div>
+      <div class="flow">
+        <div><b>Sources</b><span>Field surveys, audio, cameras, eDNA, remote sensing, public monitoring, corporate data</span></div>
+        <div><b>In-house analysis</b><span>Protocols plus tools fit to each data type; versioned scripts; research partners</span></div>
+        <div><b>Open archives</b><span>Zenodo, PANGAEA, EnviDat, OpenTopography: one DOI per release</span></div>
+        <div><b>Swiss data system</b><span>Species records to InfoSpecies, on to GBIF; metadata to opendata.swiss</span></div>
+        <div class="here"><b>Register</b><span>One project file per project, in the project's own repository</span></div>
+        <div><b>Outputs</b><span>Finance dashboards, funder reports, verification packages, OECM evidence</span></div>
+        <div><b>Users</b><span>FOEN, cantons, funders, reviewers, researchers, the public</span></div>
+      </div>
+      <p style="margin-top: 28px"><a href="about.html">More on how the register works →</a></p>
+    </div>
+  </section>
+
+  <section class="section" id="openness">
+    <div class="wrap">
+      <div class="opener">
+        <div class="label">Openness</div>
+        <h2>Three levels, stated per item</h2>
+        <p>Every dataset, agreement plus document carries one of three labels. Nothing is left out silently.</p>
+      </div>
+      <div class="levels">
+        <div><div class="access public"><span class="k">Public</span></div><h3>Shown in full</h3><p>Description, licence plus a link or DOI to the data or document.</p></div>
+        <div><div class="access on-request"><span class="k">On request</span></div><h3>Listed, content on request</h3><p>Parties, type, date plus status are shown. The content goes out on request to register@nfa.ch.</p></div>
+        <div><div class="access not-disclosed"><span class="k">Not disclosed</span></div><h3>Listed with a reason</h3><p>For example personal data, consent not given, exact sites of sensitive species. Fees are never published.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="footer"></footer>
+
+<script src="assets/vendor/leaflet/leaflet.js"></script>
+<script src="assets/js/common.js"></script>
+<script src="assets/js/home.js"></script>
+</body>
+</html>

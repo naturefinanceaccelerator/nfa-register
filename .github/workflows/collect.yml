@@ -1,0 +1,50 @@
+name: Collect projects
+
+# Collects every project file, then publishes the site with GitHub Pages.
+# Runs on every push, every night, and with the "Run workflow" button.
+# Nothing is committed back: your local folder stays the only source of edits.
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 2 * * *"   # every night, 02:17 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install jsonschema
+      - name: Collect project files
+        run: python tools/collect.py
+        continue-on-error: true   # a broken project file keeps its last good version; see the log
+        env:
+          CI: "true"
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

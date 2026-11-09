@@ -1,0 +1,11 @@
+{
+  "about": "One line per project repository. The collector reads nfa-project.json from each. localPath is used only when GitHub cannot be reached (local preview).",
+  "projects": [
+    {
+      "repo": "naturefinanceaccelerator/nfa-001-mellingen",
+      "branch": "main",
+      "file": "nfa-project.json",
+      "localPath": "../nfa-001-mellingen"
+    }
+  ]
+}
