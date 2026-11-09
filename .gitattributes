@@ -1,0 +1,9 @@
+# Line endings: LF in the repository, CRLF only for Windows batch files
+* text=auto eol=lf
+*.bat text eol=crlf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.woff2 binary
+*.zip binary
