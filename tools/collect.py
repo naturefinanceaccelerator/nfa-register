@@ -14,7 +14,6 @@ collect.bat (Windows) or run: python tools/collect.py
 """
 import json
 import os
-import shutil
 import sys
 import urllib.request
 from datetime import date, datetime, timezone
@@ -113,8 +112,7 @@ def copy_asset(src, slug, rel):
 def prepare(p, src, origin):
     slug = p["slug"]
     target = DATA / "projects" / slug
-    if target.exists():
-        shutil.rmtree(target)
+    before = {f for f in target.rglob("*") if f.is_file()} if target.exists() else set()
     for img in p.get("images", []):
         img["src"] = copy_asset(src, slug, img["src"])
     for o in p["organisations"]:
@@ -139,6 +137,15 @@ def prepare(p, src, origin):
     for d in p["datasets"]:
         if d.get("creators"):
             d["creators"] = [c for c in d["creators"] if c in shown]
+    # remove files no longer used; files are overwritten in place (OneDrive locks folders)
+    kept = {(ROOT / x).resolve() for x in [i.get("src") for i in p.get("images", [])] +
+            [o.get("logo") for o in p["organisations"]] + [loc.get("boundary")] if x and not x.startswith("http")}
+    for f in before:
+        if f.resolve() not in kept:
+            try:
+                f.unlink()
+            except OSError:
+                pass
     repo = src.get("repo")
     p["_source"] = {
         "repo": f"https://github.com/{repo}" if repo else None,
@@ -258,8 +265,13 @@ def main():
             if prev.is_file():
                 collected.append(json.loads(prev.read_text(encoding="utf-8")))
             continue
-        p = prepare(p, src, origin)
-        (DATA / "projects" / f"{p['slug']}.json").write_text(json.dumps(p, ensure_ascii=False, indent=1), encoding="utf-8")
+        try:
+            p = prepare(p, src, origin)
+            (DATA / "projects" / f"{p['slug']}.json").write_text(json.dumps(p, ensure_ascii=False, indent=1), encoding="utf-8")
+        except OSError as e:
+            failed += 1
+            log(f"  could not write local files ({e.__class__.__name__}): {e}")
+            continue
         collected.append(p)
         log(f"  ok ({origin}): {p['id']} {p['name']}")
 
