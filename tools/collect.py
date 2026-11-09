@@ -43,7 +43,13 @@ def raw_url(src, path):
 
 
 def fetch(src, path):
-    """Return bytes of a file in the project repository, GitHub first, local folder second."""
+    """Return bytes of a file in the project repository, GitHub first, local folder second.
+    With NFA_LOCAL set (local preview), the local folder comes first."""
+    local = src.get("localPath")
+    if local and os.environ.get("NFA_LOCAL"):
+        p = (ROOT / local / path).resolve()
+        if p.is_file():
+            return p.read_bytes(), "local"
     if src.get("repo"):
         try:
             req = urllib.request.Request(raw_url(src, path), headers={"User-Agent": "nfa-register-collector"})
