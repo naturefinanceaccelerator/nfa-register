@@ -5,7 +5,7 @@
   try {
     index = await getJSON("data/index.json");
   } catch (e) {
-    document.getElementById("rows").innerHTML = `<p class="empty">The register index could not be loaded. Open the site through a web server (preview.bat), not as a file.</p>`;
+    document.getElementById("rows").innerHTML = `<p class="empty">The register index could not be loaded. Open the site through a web server (preview-register.bat), not as a file.</p>`;
     return;
   }
   if (NFA.WIP) { const w = document.getElementById("wip"); w.querySelector("span").textContent = NFA.WIP_TEXT; w.hidden = false; }
@@ -28,7 +28,7 @@
     const card = document.getElementById("latest");
     card.href = `project.html?id=${encodeURIComponent(latest.slug)}`;
     card.innerHTML = `${latest.image ? `<img src="${esc(latest.image)}" alt="" style="width:100%;height:110px;object-fit:cover;border-radius:6px;margin-bottom:12px">` : ""}
-      <div class="label lime">Latest entry</div><strong>${esc(latest.name)}</strong><small>${esc(latest.id)} · updated ${esc(NFA.fmtDate(latest.lastUpdated))}</small>`;
+      <div class="label light">Latest entry</div><strong>${esc(latest.name)}</strong><small>${esc(latest.id)} · updated ${esc(NFA.fmtDate(latest.lastUpdated))}</small>`;
     card.hidden = false;
   }
 
@@ -38,8 +38,8 @@
   [...new Set(projects.map((p) => p.stage))].forEach((s) => fS.insertAdjacentHTML("beforeend", `<option value="${esc(s)}">${esc(STAGES[s] || s)}</option>`));
 
   // map
-  const map = makeMap("map");
-  map.fitBounds([[45.82, 5.96], [47.81, 10.49]]);
+  const map = makeMap("map", { zoomSnap: 0.5 });
+  NFA.fitSwitzerland(map);
   const markers = {};
   projects.forEach((p) => {
     markers[p.slug] = L.marker([p.point[1], p.point[0]], { icon: pin(), title: p.name })

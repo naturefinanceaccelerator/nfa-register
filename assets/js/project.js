@@ -46,8 +46,10 @@
   </div>`;
 
   /* ---------- tabs */
+  const images = p.images || [];
   const sections = [
     ["overview", "Overview"],
+    ...(images.length > 1 ? [["images", "Images", images.length]] : []),
     ["measurements", "Measurements", p.measurements.length],
     ["data", "Data", p.datasets.length],
     ["agreements", "Agreements", p.agreements.length],
@@ -157,6 +159,18 @@
     ${docs.length ? `<table class="reg"><thead><tr><th>Document</th><th>Type</th><th>Status</th><th>Access</th></tr></thead><tbody>${docRows}</tbody></table>` : `<p class="muted">No documents listed yet.</p>`}
   </section>`;
 
+  /* ---------- images (shown once a project has more than the header photo) */
+  const gallery = images.length > 1 ? `
+  <section class="block" id="images">
+    <div class="label">Images</div>
+    <h2>From the site</h2>
+    <div class="gallery">${images.map((i) => `
+      <figure>
+        <a href="${esc(i.src)}" target="_blank" rel="noopener"><img src="${esc(i.src)}" alt="${esc(i.alt)}" loading="lazy"></a>
+        <figcaption>${i.caption ? `${esc(i.caption)}<br>` : ""}<span class="muted">${[i.date ? esc(fmtDate(i.date)) : "", i.credit ? "Photo: " + esc(i.credit) : "", i.licence ? licence(i.licence) : ""].filter(Boolean).join(" · ")}</span></figcaption>
+      </figure>`).join("")}</div>
+  </section>` : "";
+
   /* ---------- organisations */
   const organisations = `
   <section class="block" id="organisations">
@@ -211,7 +225,7 @@
     <section><h4>Licence</h4><span>Record ${licence(p.licence || "CC-BY-4.0")}</span></section>
   </aside>`;
 
-  main.innerHTML = head + tabs + `<div class="wrap p-body"><div>${overview}${measurements}${data}${agreements}${documents}${organisations}${timeline}</div>${side}</div>`;
+  main.innerHTML = head + tabs + `<div class="wrap p-body"><div>${overview}${gallery}${measurements}${data}${agreements}${documents}${organisations}${timeline}</div>${side}</div>`;
 
   /* ---------- map */
   const map = makeMap("pmap", { imagery: true });
@@ -219,12 +233,13 @@
   if (loc.boundary) {
     try {
       const gj = await getJSON(loc.boundary);
-      const layer = L.geoJSON(gj, { style: { color: "#d4f36b", weight: 3, fillColor: "#d4f36b", fillOpacity: 0.15 } }).addTo(map);
+      const line = NFA.cssVar("--map-mark");
+      const layer = L.geoJSON(gj, { style: { color: line, weight: 3, fillColor: line, fillOpacity: 0.15 } }).addTo(map);
       map.fitBounds(layer.getBounds(), { padding: [24, 24] });
     } catch { map.setView(ll, 14); }
   } else {
     L.marker(ll, { icon: pin(), title: p.name }).addTo(map);
-    map.setView(ll, loc.pointPrecision === "municipality" ? 13 : 15);
+    map.setView(ll, loc.pointPrecision === "municipality" ? 14 : 16);
   }
 
   /* ---------- copy citation, active tab, target row */

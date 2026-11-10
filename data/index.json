@@ -1,7 +1,7 @@
 {
  "register": "NFA Project Register",
  "schemaVersion": "0.1",
- "generated": "2026-11-09",
+ "generated": "2026-11-10",
  "totals": {
   "projects": 1,
   "hectares": 30,
@@ -49,8 +49,8 @@
    },
    "disclosure": {
     "on-request": 11,
-    "not-disclosed": 1,
-    "public": 11
+    "public": 11,
+    "not-disclosed": 1
    },
    "lastUpdated": "2026-11-09"
   }

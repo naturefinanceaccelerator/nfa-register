@@ -98,20 +98,50 @@ const NFA = (() => {
     image: "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.swissimage/default/current/3857/{z}/{x}/{y}.jpeg"
   };
 
+  // swisstopo tiles exist only inside this extent; outside it no tiles are requested (no empty boxes)
+  const EXTENT = [[45.398181, 5.140242], [48.230651, 11.47757]];
+  const SWITZERLAND = [[45.82, 5.96], [47.81, 10.49]];
+
+  /** A colour from the tokens in register.css, so colours live in one place. */
+  const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
   function makeMap(el, opts = {}) {
-    const map = L.map(el, { scrollWheelZoom: false, zoomControl: true, attributionControl: true, minZoom: 7, maxZoom: 19 });
+    const map = L.map(el, { scrollWheelZoom: false, zoomControl: true, attributionControl: true, minZoom: 7, maxZoom: 19, zoomSnap: opts.zoomSnap || 1 });
     const attr = '© <a href="https://www.swisstopo.admin.ch" target="_blank" rel="noopener">swisstopo</a>';
-    // swisstopo tiles exist only inside this extent; outside it no tiles are requested (no empty boxes)
-    const extent = L.latLngBounds([45.398181, 5.140242], [48.230651, 11.47757]);
+    const extent = L.latLngBounds(EXTENT);
     const grey = L.tileLayer(TILES.grey, { attribution: attr, maxZoom: 19, maxNativeZoom: 18, bounds: extent });
-    const image = L.tileLayer(TILES.image, { attribution: attr, maxZoom: 19, bounds: extent });
+    // aerial: sharper tiles on high-resolution screens
+    const image = L.tileLayer(TILES.image, { attribution: attr, maxZoom: 19, maxNativeZoom: 18, detectRetina: true, bounds: extent });
     (opts.imagery ? image : grey).addTo(map);
+    const container = map.getContainer();
+    container.classList.toggle("aerial", !!opts.imagery);
+    map.on("baselayerchange", (e) => container.classList.toggle("aerial", e.layer === image));
     L.control.layers({ "Map": grey, "Aerial": image }, null, { position: "topright" }).addTo(map);
     map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
     map.setMaxBounds(extent);
     map.on("focus", () => map.scrollWheelZoom.enable());
     map.on("blur", () => map.scrollWheelZoom.disable());
     return map;
+  }
+
+  /** Show all of Switzerland. If the box is taller than the map tiles, shorten it (no empty band below). */
+  function fitSwitzerland(map) {
+    const el = map.getContainer();
+    const fit = () => {
+      el.style.height = "";
+      map.invalidateSize();
+      map.fitBounds(SWITZERLAND);
+      const z = map.getZoom(), b = L.latLngBounds(EXTENT);
+      const tilesHigh = map.project(b.getSouthWest(), z).y - map.project(b.getNorthEast(), z).y;
+      if (el.clientHeight > tilesHigh) {
+        el.style.height = Math.floor(tilesHigh) + "px";
+        map.invalidateSize();
+        map.fitBounds(SWITZERLAND);
+      }
+    };
+    fit();
+    let t;
+    window.addEventListener("resize", () => { clearTimeout(t); t = setTimeout(fit, 200); });
   }
 
   const pin = () => L.divIcon({ className: "", html: '<div class="nfa-pin"></div>', iconSize: [16, 16], iconAnchor: [8, 8] });
@@ -149,5 +179,5 @@ const NFA = (() => {
 
   document.addEventListener("DOMContentLoaded", footer);
 
-  return { CONTACT, REPO, WIP, WIP_TEXT, CANTONS, places, STAGES, STATUS, DISCLOSURE, esc, getJSON, chip, licence, access, mailto, opennessBar, area, fmtDate, makeMap, pin };
+  return { CONTACT, REPO, WIP, WIP_TEXT, CANTONS, places, STAGES, STATUS, DISCLOSURE, esc, getJSON, chip, licence, access, mailto, opennessBar, area, fmtDate, makeMap, fitSwitzerland, cssVar, pin };
 })();

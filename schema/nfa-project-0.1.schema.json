@@ -51,8 +51,13 @@
       }
     },
     "images": {
+      "description": "Photos of the project. The first is the header photo; with two or more, an Images section is shown.",
       "type": "array",
-      "items": { "type": "object", "required": ["src", "alt"], "properties": { "src": { "type": "string" }, "alt": { "type": "string" }, "credit": { "type": "string" }, "licence": { "type": "string" } } }
+      "items": { "type": "object", "required": ["src", "alt"], "properties": {
+        "src": { "type": "string" }, "alt": { "type": "string" },
+        "caption": { "type": "string" },
+        "date": { "type": "string", "pattern": "^[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?$" },
+        "credit": { "type": "string" }, "licence": { "type": "string" } } }
     },
     "organisations": {
       "type": "array",
