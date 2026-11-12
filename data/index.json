@@ -49,8 +49,8 @@
    },
    "disclosure": {
     "not-disclosed": 1,
-    "public": 11,
-    "on-request": 11
+    "on-request": 11,
+    "public": 11
    },
    "lastUpdated": "2026-11-11"
   }
