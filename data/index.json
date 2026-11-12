@@ -48,9 +48,9 @@
     "organisations": 12
    },
    "disclosure": {
-    "not-disclosed": 1,
+    "on-request": 11,
     "public": 11,
-    "on-request": 11
+    "not-disclosed": 1
    },
    "lastUpdated": "2026-11-11"
   }
