@@ -1,6 +1,8 @@
 name: Collect projects
 
-# Collects every project file, then publishes the site with GitHub Pages.
+# Collects every project file, locks the site behind a password, then publishes it with GitHub Pages.
+# Only the locked version (_site) is published. The password is the repository secret REGISTER_PASSWORD;
+# without it the run stops and nothing is published.
 # Runs on every push, every night, and with the "Run workflow" button.
 # Nothing is committed back: your local folder stays the only source of edits.
 
@@ -28,16 +30,20 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install jsonschema
+      - run: pip install jsonschema cryptography
       - name: Collect project files
         run: python tools/collect.py
         continue-on-error: true   # a broken project file keeps its last good version; see the log
         env:
           CI: "true"
+      - name: Lock the site with the password
+        run: python tools/lock.py
+        env:
+          REGISTER_PASSWORD: ${{ secrets.REGISTER_PASSWORD }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
 
   deploy:
     needs: build

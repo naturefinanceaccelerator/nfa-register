@@ -27,8 +27,9 @@ project repo (one per project)          this repo (nfa-register)
 | Edit a project | Edit `nfa-project.json` in the project folder, then double-click `sync-github.bat` |
 | Add a project | New folder `nfa-<next number>-<name>` next to this one, one line in `registry/sources.json`, then sync |
 | Update the site now | Double-click `sync-github.bat` next to the folders (every push republishes the site) |
+| Password on the website | The site on GitHub opens with a password window; only the locked version is published (`tools/lock.py`). The password is the repository secret `REGISTER_PASSWORD` (Settings → Secrets and variables → Actions). To change it: update the secret, then Actions → "Collect projects" → Run workflow |
 | Preview on your PC | Double-click `preview-register.bat` next to the folders: rebuilds from your local files, opens the browser |
-| Share with the team (password) | Double-click `web-register.bat` next to the folders, upload the contents of `C:\NFA_data\4_projects\register\web` with FileZilla to demo.datascientist.ch, folder `register` → https://demo.datascientist.ch/register/ (password `nfa`) |
+| Share with the team (password) | Double-click `web-register.bat` next to the folders, upload the contents of `C:\NFA_data\4_projects\register\web` with FileZilla to demo.datascientist.ch, folder `register` → https://demo.datascientist.ch/register/ (same password as the NFA maps) |
 | Live monitoring block | `monitoring` in the project file: up to four key figures, charts (`bars`, `hbars`, `split`), sounds. Audio clips go in the project folder under `audio/`, referenced as `"src": "audio/<name>.mp3"` |
 | Change the colours | Change the values in `:root` at the top of `assets/css/register.css`. Roles (labels, chips, map pin) are mapped right below the palette |
 
