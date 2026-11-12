@@ -59,6 +59,32 @@
         "date": { "type": "string", "pattern": "^[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?$" },
         "credit": { "type": "string" }, "licence": { "type": "string" } } }
     },
+    "monitoring": {
+      "description": "Optional live monitoring snapshot, shown below the header photo plus map: key figures, small charts, sounds. Figures as read from the provider's dashboard.",
+      "type": "object",
+      "required": ["provider", "period", "kpis"],
+      "properties": {
+        "title": { "type": "string" }, "provider": { "type": "string" }, "method": { "type": "string" },
+        "period": { "type": "object", "properties": { "from": { "type": "string" }, "to": { "type": "string" } } },
+        "retrieved": { "type": "string" }, "dashboardUrl": { "type": "string" }, "note": { "type": "string" },
+        "sources": { "type": "array", "items": { "type": "object", "required": ["id", "provider", "status"], "properties": {
+          "id": { "type": "string" }, "provider": { "type": "string" }, "label": { "type": "string" },
+          "status": { "enum": ["live", "example"], "description": "example = placeholder figures, shown with an Example data tag" }, "period": { "type": "string" } } } },
+        "exampleNote": { "type": "string" },
+        "kpis": { "type": "array", "maxItems": 6, "items": { "type": "object", "required": ["value", "label"], "properties": {
+          "value": { "type": "string" }, "label": { "type": "string" }, "note": { "type": "string" }, "source": { "type": "string" } } } },
+        "charts": { "type": "array", "items": { "type": "object", "required": ["id", "type", "labels", "values"], "properties": {
+          "id": { "type": "string" }, "type": { "enum": ["bars", "hbars", "split"] }, "title": { "type": "string" }, "subtitle": { "type": "string" },
+          "labels": { "type": "array", "items": { "type": "string" } }, "values": { "type": "array", "items": { "type": "number" } },
+          "unit": { "type": "string" }, "note": { "type": "string" }, "source": { "type": "string" }, "decimals": { "type": "integer" } } } },
+        "sounds": { "type": "array", "items": { "type": "object", "required": ["species"], "properties": {
+          "species": { "type": "string" }, "latin": { "type": "string" }, "redList": { "type": "string" },
+          "lastHeard": { "type": "string" }, "detections": { "type": "number" }, "recorders": { "type": "string" },
+          "clipRecorded": { "type": "string" }, "clipRecorder": { "type": "string" }, "dataset": { "type": "string", "description": "Dataset id: the clip is also listed as a sample there" },
+          "src": { "type": ["string", "null"], "description": "Short clip in the project repository, e.g. audio/kingfisher.mp3; null = clip follows" },
+          "credit": { "type": "string" } } } }
+      }
+    },
     "organisations": {
       "type": "array",
       "items": {

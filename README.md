@@ -28,6 +28,8 @@ project repo (one per project)          this repo (nfa-register)
 | Add a project | New folder `nfa-<next number>-<name>` next to this one, one line in `registry/sources.json`, then sync |
 | Update the site now | Double-click `sync-github.bat` next to the folders (every push republishes the site) |
 | Preview on your PC | Double-click `preview-register.bat` next to the folders: rebuilds from your local files, opens the browser |
+| Share with the team (password) | Double-click `web-register.bat` next to the folders, upload the contents of `C:\NFA_data\4_projects\register\web` with FileZilla to demo.datascientist.ch, folder `register` → https://demo.datascientist.ch/register/ (password `nfa`) |
+| Live monitoring block | `monitoring` in the project file: up to four key figures, charts (`bars`, `hbars`, `split`), sounds. Audio clips go in the project folder under `audio/`, referenced as `"src": "audio/<name>.mp3"` |
 | Change the colours | Change the values in `:root` at the top of `assets/css/register.css`. Roles (labels, chips, map pin) are mapped right below the palette |
 
 The GitHub workflow collects every project file, checks it against `schema/nfa-project-0.1.schema.json`

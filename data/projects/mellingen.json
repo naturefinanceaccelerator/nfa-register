@@ -52,7 +52,7 @@
   "baselineT0Note": "Field baseline planned for the 2027 season",
   "nextVerification": null,
   "registered": "2026-11-08",
-  "lastUpdated": "2026-11-09"
+  "lastUpdated": "2026-11-11"
  },
  "images": [
   {
@@ -60,8 +60,388 @@
    "alt": "Aerial view of the Mellingen site: farmland, forest and the Reuss",
    "credit": "Nature Finance Accelerator",
    "licence": "CC-BY-4.0"
+  },
+  {
+   "src": "data/projects/mellingen/images/meadow-forest-edge.jpg",
+   "alt": "Meadow running into the forest edge on a summer day",
+   "caption": "Meadow along the forest edge",
+   "date": "2026-08-24",
+   "credit": "Nature Finance Accelerator"
+  },
+  {
+   "src": "data/projects/mellingen/images/field-margin-flowers.jpg",
+   "alt": "Flowering field margin with a butterfly",
+   "caption": "Wildflowers along a field margin",
+   "date": "2026-08-24",
+   "credit": "Nature Finance Accelerator"
+  },
+  {
+   "src": "data/projects/mellingen/images/blue-butterfly.jpg",
+   "alt": "Small blue butterfly resting on a purple flower",
+   "caption": "A blue butterfly on a flower",
+   "date": "2026-08-24",
+   "credit": "Nature Finance Accelerator"
+  },
+  {
+   "src": "data/projects/mellingen/images/beetle-on-leaf.jpg",
+   "alt": "Metallic green beetle on a young leaf",
+   "caption": "A beetle on a young leaf",
+   "date": "2026-08-24",
+   "credit": "Nature Finance Accelerator"
+  },
+  {
+   "src": "data/projects/mellingen/images/field-sampling-kit.jpg",
+   "alt": "Gloved hand taking a sample from a cool box in tall grass",
+   "caption": "Sampling kit in the field",
+   "date": "2026-08-24",
+   "credit": "Nature Finance Accelerator"
+  },
+  {
+   "src": "data/projects/mellingen/images/forest-canopy.jpg",
+   "alt": "Sunlight through the beech forest canopy",
+   "caption": "Light through the forest canopy",
+   "date": "2026-08-24",
+   "credit": "Nature Finance Accelerator"
+  },
+  {
+   "src": "data/projects/mellingen/images/farm-bales.jpg",
+   "alt": "Stacked green silage bales beside a meadow",
+   "caption": "Silage bales on the farm",
+   "date": "2026-08-24",
+   "credit": "Nature Finance Accelerator"
+  },
+  {
+   "src": "data/projects/mellingen/images/seed-heads.jpg",
+   "alt": "Grass seed heads in an unmown strip",
+   "caption": "Seed heads in an unmown strip",
+   "date": "2026-08-24",
+   "credit": "Nature Finance Accelerator"
   }
  ],
+ "monitoring": {
+  "title": "Live from the site",
+  "provider": "synature",
+  "method": "Passive acoustic monitoring: 8 recorders, one minute every two minutes, AI species detection, expert verification",
+  "period": {
+   "from": "2026-10-02",
+   "to": "2026-11-04"
+  },
+  "retrieved": "2026-11-11",
+  "dashboardUrl": "https://app.synature.ch/en/p/ce382c16-c17e-421c-83f3-29ff83abd4c8/dashboard",
+  "note": "Autumn snapshot from the Synature dashboard. Detections are automated; species count as verified once a Synature expert has checked the recordings. Red List status as shown by Synature.",
+  "kpis": [
+   {
+    "value": "191,300",
+    "label": "calls detected",
+    "note": "8 recorders, 2 Oct to 4 Nov 2026",
+    "source": "acoustics"
+   },
+   {
+    "value": "49",
+    "label": "species verified by experts",
+    "note": "100 detected, the rest still to check",
+    "source": "acoustics"
+   },
+   {
+    "value": "6",
+    "label": "Red List birds verified",
+    "note": "3 vulnerable, 3 near threatened",
+    "source": "acoustics"
+   },
+   {
+    "value": "4",
+    "label": "amphibian species at the ponds",
+    "note": "incl. yellow-bellied toad",
+    "source": "amphibians"
+   },
+   {
+    "value": "196",
+    "label": "taxa found in the air",
+    "note": "plants, fungi, insects, vertebrates",
+    "source": "edna"
+   }
+  ],
+  "charts": [
+   {
+    "id": "hourly",
+    "type": "bars",
+    "title": "The site wakes at seven",
+    "subtitle": "Detections per hour of day, all recorders",
+    "labels": [
+     "00",
+     "01",
+     "02",
+     "03",
+     "04",
+     "05",
+     "06",
+     "07",
+     "08",
+     "09",
+     "10",
+     "11",
+     "12",
+     "13",
+     "14",
+     "15",
+     "16",
+     "17",
+     "18",
+     "19",
+     "20",
+     "21",
+     "22",
+     "23"
+    ],
+    "values": [
+     1600,
+     1500,
+     1300,
+     1100,
+     1000,
+     1100,
+     3300,
+     19300,
+     15300,
+     14500,
+     13800,
+     13300,
+     12400,
+     11900,
+     11900,
+     12200,
+     12200,
+     14000,
+     16500,
+     5200,
+     2100,
+     1900,
+     1700,
+     1700
+    ],
+    "unit": "detections",
+    "note": "Read from the Synature chart, rounded to the nearest 100",
+    "source": "acoustics"
+   },
+   {
+    "id": "top",
+    "type": "hbars",
+    "title": "The loudest neighbours",
+    "subtitle": "Most detected species",
+    "labels": [
+     "European Robin",
+     "Long-tailed Tit",
+     "Common Chiffchaff",
+     "Marsh Tit",
+     "Great Tit",
+     "Eurasian Nuthatch",
+     "Northern Wren",
+     "Great Spotted Woodpecker"
+    ],
+    "values": [
+     60413,
+     10529,
+     10082,
+     7907,
+     7872,
+     6799,
+     6715,
+     5683
+    ],
+    "unit": "detections",
+    "source": "acoustics"
+   },
+   {
+    "id": "groups",
+    "type": "split",
+    "title": "Who is calling",
+    "subtitle": "Species detected, by group",
+    "labels": [
+     "Birds",
+     "Insects",
+     "Mammals"
+    ],
+    "values": [
+     83,
+     12,
+     5
+    ],
+    "unit": "species",
+    "note": "Verified plus pending",
+    "source": "acoustics"
+   },
+   {
+    "id": "amphibians",
+    "type": "hbars",
+    "source": "amphibians",
+    "title": "Who breeds in the ponds",
+    "subtitle": "Adults counted, spring survey",
+    "labels": [
+     "Common toad",
+     "Common frog",
+     "Alpine newt",
+     "Yellow-bellied toad"
+    ],
+    "values": [
+     142,
+     64,
+     37,
+     9
+    ],
+    "unit": "adults"
+   },
+   {
+    "id": "soil",
+    "type": "bars",
+    "source": "soil",
+    "title": "Carbon in the topsoil",
+    "subtitle": "Soil organic carbon, 0 to 20 cm, per area",
+    "labels": [
+     "Main I",
+     "Main II",
+     "Reference"
+    ],
+    "values": [
+     2.1,
+     1.9,
+     2.6
+    ],
+    "unit": "%",
+    "decimals": 1
+   },
+   {
+    "id": "edna",
+    "type": "split",
+    "source": "edna",
+    "title": "What the air carries",
+    "subtitle": "Taxa detected in airborne eDNA",
+    "labels": [
+     "Plants",
+     "Fungi",
+     "Insects",
+     "Vertebrates"
+    ],
+    "values": [
+     96,
+     41,
+     37,
+     22
+    ],
+    "unit": "taxa"
+   }
+  ],
+  "sounds": [
+   {
+    "species": "Meadow Pipit",
+    "latin": "Anthus pratensis",
+    "redList": "VU",
+    "lastHeard": "2026-11-04",
+    "detections": 74,
+    "recorders": "7 of 8",
+    "src": null,
+    "clipRecorded": "2026-10-06T08:16:45",
+    "clipRecorder": "SYN-5",
+    "dataset": "ds-acoustics-raw",
+    "credit": "Synature, verified detection"
+   },
+   {
+    "species": "Common Kestrel",
+    "latin": "Falco tinnunculus",
+    "redList": "NT",
+    "lastHeard": "2026-11-04",
+    "detections": 23,
+    "recorders": "6 of 8",
+    "src": null,
+    "clipRecorded": "2026-10-07T07:22:05",
+    "clipRecorder": "SYN-4",
+    "dataset": "ds-acoustics-raw",
+    "credit": "Synature, verified detection"
+   },
+   {
+    "species": "Redwing",
+    "latin": "Turdus iliacus",
+    "redList": "NT",
+    "lastHeard": "2026-11-04",
+    "detections": 551,
+    "recorders": "8 of 8",
+    "src": null,
+    "clipRecorded": "2026-10-04T19:24:45",
+    "clipRecorder": "SYN-5",
+    "dataset": "ds-acoustics-raw",
+    "credit": "Synature, verified detection"
+   },
+   {
+    "species": "European Greenfinch",
+    "latin": "Chloris chloris",
+    "redList": "NT",
+    "lastHeard": "2026-11-03",
+    "detections": 49,
+    "recorders": "8 of 8",
+    "src": null,
+    "clipRecorded": "2026-10-03T13:22:15",
+    "clipRecorder": "SYN-5",
+    "dataset": "ds-acoustics-raw",
+    "credit": "Synature, verified detection"
+   },
+   {
+    "species": "Eurasian Skylark",
+    "latin": "Alauda arvensis",
+    "redList": "VU",
+    "lastHeard": "2026-11-02",
+    "detections": 35,
+    "recorders": "8 of 8",
+    "src": null,
+    "clipRecorded": "2026-10-05T11:40:40",
+    "clipRecorder": "SYN-1",
+    "dataset": "ds-acoustics-raw",
+    "credit": "Synature, verified detection"
+   },
+   {
+    "species": "Common Kingfisher",
+    "latin": "Alcedo atthis",
+    "redList": "VU",
+    "lastHeard": "2026-10-29",
+    "detections": 69,
+    "recorders": "6 of 8",
+    "src": null,
+    "clipRecorded": "2026-10-06T13:40:45",
+    "clipRecorder": "SYN-5",
+    "dataset": "ds-acoustics-raw",
+    "credit": "Synature, verified detection"
+   }
+  ],
+  "sources": [
+   {
+    "id": "acoustics",
+    "provider": "synature",
+    "label": "Sound",
+    "status": "live",
+    "period": "2 Oct to 4 Nov 2026"
+   },
+   {
+    "id": "amphibians",
+    "provider": "pro-natura",
+    "label": "Amphibians",
+    "status": "example",
+    "period": "Spring count"
+   },
+   {
+    "id": "soil",
+    "provider": "climate-farmers",
+    "label": "Soil",
+    "status": "example",
+    "period": "Sampling from Oct 2026"
+   },
+   {
+    "id": "edna",
+    "provider": "dnair",
+    "label": "Air eDNA",
+    "status": "example",
+    "period": "Four samplers"
+   }
+  ],
+  "exampleNote": "Grey-tagged figures are example data: they show what the page will display, not results. They are replaced by measured values as each partner delivers."
+ },
  "organisations": [
   {
    "id": "nfa",
@@ -731,6 +1111,10 @@
  "licence": "CC-BY-4.0",
  "changelog": [
   {
+   "date": "2026-11-11",
+   "change": "Live acoustic monitoring added: autumn 2026 snapshot from Synature (detections, verified species, Red List birds, sounds)."
+  },
+  {
    "date": "2026-11-08",
    "change": "Entry created."
   },
@@ -742,7 +1126,7 @@
  "_source": {
   "repo": "https://github.com/naturefinanceaccelerator/nfa-001-mellingen",
   "file": "https://raw.githubusercontent.com/naturefinanceaccelerator/nfa-001-mellingen/main/nfa-project.json",
-  "origin": "local",
-  "collected": "2026-11-10T06:25Z"
+  "origin": "github",
+  "collected": "2026-11-12T21:48Z"
  }
 }

@@ -130,6 +130,13 @@ def prepare(p, src, origin):
                 o["logo"] = None
         else:
             o["logo"] = None
+    for snd in (p.get("monitoring") or {}).get("sounds", []):
+        if snd.get("src"):
+            try:
+                snd["src"] = copy_asset(src, slug, snd["src"])
+            except FileNotFoundError:
+                log(f"  sound file missing for {snd.get('species')}, shown as 'clip follows'")
+                snd["src"] = None
     loc = p["location"]
     if loc.get("boundary"):
         try:
@@ -145,7 +152,8 @@ def prepare(p, src, origin):
             d["creators"] = [c for c in d["creators"] if c in shown]
     # remove files no longer used; files are overwritten in place (OneDrive locks folders)
     kept = {(ROOT / x).resolve() for x in [i.get("src") for i in p.get("images", [])] +
-            [o.get("logo") for o in p["organisations"]] + [loc.get("boundary")] if x and not x.startswith("http")}
+            [o.get("logo") for o in p["organisations"]] + [loc.get("boundary")] +
+            [x.get("src") for x in (p.get("monitoring") or {}).get("sounds", [])] if x and not x.startswith("http")}
     for f in before:
         if f.resolve() not in kept:
             try:
