@@ -68,7 +68,7 @@ LOGIN = r"""<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>__TITLE__</title>
-<link rel="icon" href="__LOGO__">
+<link rel="icon" type="image/png" href="__ICON__">
 <style>
 :root { color-scheme: light; --forest: #0C3024; --sage: #527A64; --mist: #D3E4DA; --line: #9DBDA9; --paper: #F6F7F5; }
 * { box-sizing: border-box; }
@@ -227,10 +227,12 @@ def main():
     locked = lock(data)
     logo = SITE / "assets" / "img" / "logo-nfa-ink.png"
     logo_uri = "data:image/png;base64," + base64.b64encode(logo.read_bytes()).decode("ascii")
+    icon = SITE / "assets" / "img" / "favicon.png"   # square mark for the browser tab; the wide logo gets squashed there
+    icon_uri = "data:image/png;base64," + base64.b64encode(icon.read_bytes()).decode("ascii")
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "site.bin").write_bytes(locked)
     for page, title in PAGES.items():
-        html = LOGIN.replace("__TITLE__", title).replace("__LOGO__", logo_uri).replace("__PAGE__", page)
+        html = LOGIN.replace("__TITLE__", title).replace("__LOGO__", logo_uri).replace("__ICON__", icon_uri).replace("__PAGE__", page)
         (OUT / page).write_text(html, encoding="utf-8")
     size = sum(f.stat().st_size for f in OUT.iterdir() if f.is_file())
     print(f"{len(data['files'])} files plus {len(data['pages'])} pages locked -> _site ({size / 1e6:.1f} MB)")
