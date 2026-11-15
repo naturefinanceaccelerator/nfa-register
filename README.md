@@ -1,6 +1,8 @@
 # NFA Project Register
 
-Public register of Nature Finance Accelerator projects: **https://register.nfa.ch**
+Public register of Nature Finance Accelerator projects: **https://naturefinanceaccelerator.github.io/nfa-register/**
+
+Planned custom domain: https://register.nfa.ch (see below).
 
 The register is a catalogue. It holds metadata plus links; the data live in open archives
 (Zenodo, OpenTopography, PANGAEA, InfoSpecies). Each project keeps its own record in its own
