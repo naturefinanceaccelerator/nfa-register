@@ -1,0 +1,10 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Reference area" },
+      "geometry": { "type": "Point", "coordinates": [8.32354006949305, 47.3839659414661] }
+    }
+  ]
+}

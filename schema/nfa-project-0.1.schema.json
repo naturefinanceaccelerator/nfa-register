@@ -44,10 +44,27 @@
         "areaPrecision": { "enum": ["surveyed", "approximate"] },
         "referenceAreas": {
           "type": ["string", "null"],
-          "description": "Relative path to a GeoJSON file with the reference areas (features may carry a 'name'). Shown on the project map next to the project area."
+          "description": "Relative path to a GeoJSON file with the reference areas: points or outlines, features may carry a 'name'. Shown in orange on the project map."
         },
         "referenceAreasStatus": { "enum": ["surveyed", "indicative", "pending"] },
-        "referenceAreasNote": { "type": "string" }
+        "referenceAreasNote": { "type": "string" },
+        "sites": {
+          "type": "array",
+          "description": "Sites of the project, each shown as a dot on the project map. Use it when a project has more than one site.",
+          "items": {
+            "type": "object",
+            "required": ["name", "point"],
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "municipality": { "type": "string" },
+              "point": { "type": "array", "minItems": 2, "maxItems": 2, "items": { "type": "number" }, "description": "[longitude, latitude], WGS84" },
+              "pointPrecision": { "type": "string" },
+              "areaHa": { "type": "number" },
+              "note": { "type": "string" }
+            }
+          }
+        }
       }
     },
     "ecosystem": { "type": "array", "items": { "type": "string" } },
@@ -77,7 +94,11 @@
     "dates": {
       "type": "object",
       "required": ["registered", "lastUpdated"],
-      "properties": { "registered": { "type": "string", "format": "date" }, "lastUpdated": { "type": "string", "format": "date" } }
+      "properties": {
+        "registered": { "type": "string", "format": "date" },
+        "lastUpdated": { "type": "string", "format": "date" },
+        "durationNote": { "type": "string", "description": "Planned duration in a few words, e.g. 'Project planned for at least 15 years'. Shown small under the basket." }
+      }
     },
     "schedule": {
       "description": "Measurement rounds, in order. The first is the baseline. The basket at the top of the project page uses these as its time axis.",
@@ -203,11 +224,17 @@
               "clipRecorder": { "type": "string" },
               "dataset": { "type": "string", "description": "Dataset id: the clip is also listed as a sample there" },
               "src": { "type": ["string", "null"], "description": "Short clip in the project repository, e.g. audio/kingfisher.mp3; null = clip follows" },
-              "credit": { "type": "string" }
+              "credit": { "type": "string" },
+              "image": { "type": ["string", "null"], "description": "Small photo of the species, relative path, e.g. images/species/redwing.jpg" },
+              "imageCredit": { "type": "string", "description": "Photographer" },
+              "imageLicence": { "type": "string", "description": "Licence of the photo, e.g. CC BY-SA 4.0" },
+              "imageSource": { "type": "string", "description": "Page the photo comes from" }
             }
           }
         },
-        "didYouKnow": { "type": "string", "description": "One line introducing the 'Did you know?' section of the summary" }
+        "didYouKnow": { "type": "string", "description": "One line introducing the 'Did you know?' section of the summary" },
+        "place": { "type": "string", "description": "Where the recorders stand, for the heading of the sound list" },
+        "summarySounds": { "type": "integer", "minimum": 1, "description": "How many recordings the sound list shows before the 'Show all' button, most threatened first. Default 3." }
       }
     },
     "organisations": {

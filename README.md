@@ -38,7 +38,9 @@ project repo (one per project)          this repo (nfa-register)
 | Enter a measured value | In `measurements`, find the metric (group `core` = basket), set `value` (project area) plus `reference` (reference areas) in `series` for the round (`t0`, `t1` ...). Leave `null` until measured |
 | Set the headline indicator | `outcome`: `status` (`improving`, `stable`, `declining`), `value`, `from`, `to`, `verified`. The page never computes it |
 | Add an intervention | One line in `timeline` with `"type": "intervention"`, a `date`, optional `by` (organisation ids). It appears in the summary under "On the ground" |
-| Reference areas on the map | Save the outlines as `geo/reference-areas.geojson` in the project folder (WGS84, optional `name` per feature), set `location.referenceAreas` to that path plus `referenceAreasStatus` |
+| Reference areas on the map | Save points or outlines as `geo/reference-areas.geojson` in the project folder (WGS84, optional `name` per feature), set `location.referenceAreas` to that path. They show in orange |
+| A project with several sites | List them in `location.sites`: `name`, `municipality`, `point` (`[longitude, latitude]`), `areaHa`. Each site shows as a blue dot with its name |
+| Species photos in the sound list | Double-click `get-species-photos.bat` in `_NFA_Metadata`: it fetches a small, freely licensed photo per species from Wikipedia / Wikimedia Commons into `images/species/`, with photographer plus licence. Or add your own file plus `image`, `imageCredit`, `imageLicence` to the sound entry |
 | Change the colours | Change the values in `:root` at the top of `assets/css/register.css`. Roles (labels, chips, map pin) are mapped right below the palette |
 
 The GitHub workflow collects every project file, checks it against `schema/nfa-project-0.1.schema.json`
@@ -48,7 +50,7 @@ If a project file has errors, the log lists them and the last good version stays
 ## Project page: two views
 
 - **Summary** (default): developer, funder, funding at the top; the basket of core metrics over the measurement rounds with the
-  headline indicator "Is biodiversity improving?"; photo plus map with project area plus reference areas; work on the ground
+  headline indicator "Is biodiversity improving?"; photo plus map with the project sites (blue) plus reference areas (orange); work on the ground
   on a year axis; the project in brief; "Did you know?"; photos.
 - **Full record** (`project.html?id=<slug>&view=record`, or any link to a dataset, agreement, measurement): monitoring streams,
   methods, datasets, agreements, documents, organisations, complete timeline, citation.

@@ -3,15 +3,16 @@
  "schemaVersion": "0.1",
  "id": "NFA-001",
  "slug": "mellingen",
- "name": "Mellingen – Äbereich",
- "tagline": "Regenerative farm in the Reuss valley, Canton Aargau",
+ "name": "Mellingen – Biodiversity corridor",
+ "tagline": "Äbereich plus Letzi: two sites, one corridor in the Reuss valley, Canton Aargau",
  "stage": "baseline",
  "stageNote": "Baseline in preparation. Nothing has been claimed or verified.",
- "summary": "An organic farm in Aargau's Reuss valley, close to floodplains of national importance, developed as a model for regenerative agriculture. NFA measures how ecological condition changes on the farm against independent reference areas.",
+ "summary": "A biodiversity corridor in Aargau's Reuss valley. It links the Äbereich in Mellingen with the Letzi in Fischbach-Göslikon, between the Reuss floodplains, mires plus forest reserves. NFA measures how ecological condition changes in the corridor against independent reference areas.",
  "description": [
-  "The Äbereich farm lies in the Reuss valley near Mellingen, close to floodplains of national importance. The farm stays in production. The project focuses on soil building, water retention, extensive grazing and agroforestry on permanently secured land.",
+  "The corridor has two sites so far. The Äbereich in Mellingen: about 15 ha around a farm that stays in production, owned by Pro Natura plus Pro Natura Aargau since August 2025. The Letzi in Fischbach-Göslikon: about 5 ha that extend the corridor towards the wet meadows of the Reuss valley. Further areas are to follow.",
+  "Planned work on the ground: ponds plus rewetting, hedges plus margins, fruit plus wild trees, small structures such as sand patches plus stone piles, extensive meadows plus pasture. The aim is a connected set of habitats for amphibians, breeding birds plus other species that move between river, open land plus forest.",
   "NFA designs the measurement, coordinates the partners, holds the evidence chain and publishes what can be published. The method adapts the open Wallacea Trust methodology to Swiss conditions: a field baseline, repeated measurements over time, independent review.",
-  "Change on the farm is read against several lightly sampled reference areas, so the effect of the project can be separated from what happens in the wider landscape anyway."
+  "Change in the corridor is read against lightly sampled reference areas, so the effect of the project can be separated from what happens in the wider landscape anyway."
  ],
  "location": {
   "countries": [
@@ -20,33 +21,61 @@
   "cantons": [
    "AG"
   ],
-  "municipality": "Mellingen",
+  "municipality": "Mellingen, Fischbach-Göslikon",
   "point": [
    8.283,
    47.417
   ],
   "pointPrecision": "municipality",
+  "sites": [
+   {
+    "id": "aebereich",
+    "name": "Äbereich",
+    "municipality": "Mellingen",
+    "point": [
+     8.283,
+     47.417
+    ],
+    "pointPrecision": "municipality",
+    "areaHa": 15
+   },
+   {
+    "id": "letzi",
+    "name": "Letzi",
+    "municipality": "Fischbach-Göslikon",
+    "point": [
+     8.324485,
+     47.374525
+    ],
+    "pointPrecision": "approximate",
+    "areaHa": 5.35
+   }
+  ],
   "boundary": null,
   "boundaryStatus": "pending",
-  "boundaryNote": "The surveyed project boundary (CH1903+/LV95, EPSG:2056) will be added as geo/boundary.geojson. Until then the map shows the municipality only.",
-  "areaHa": 30,
+  "boundaryNote": "Parcel boundaries (CH1903+/LV95, EPSG:2056) follow as geo/boundary.geojson. Until then the map shows each site as a dot.",
+  "areaHa": 20,
   "areaPrecision": "approximate",
-  "referenceAreas": null,
-  "referenceAreasStatus": "pending",
-  "referenceAreasNote": "Reference area outlines follow as geo/reference-areas.geojson."
+  "referenceAreas": "data/projects/mellingen/geo/reference-areas.geojson",
+  "referenceAreasNote": "Shown as a point."
  },
  "ecosystem": [
-  "Farmland",
+  "Extensive meadows",
   "Ponds",
   "Hedgerows",
   "Forest edge"
  ],
  "landUse": "Organic farming, remains in production",
- "developers": [],
- "developersNote": "Name follows",
+ "developers": [
+  "pro-natura",
+  "creanatira"
+ ],
  "funding": {
-  "funders": [],
-  "fundersNote": "Name follows",
+  "funders": [
+   "canton-aargau",
+   "pro-natura-ch",
+   "ubs-optimus"
+  ],
   "amount": {
    "value": null,
    "currency": "CHF",
@@ -63,6 +92,7 @@
  },
  "dates": {
   "projectStart": "2026",
+  "durationNote": "Project planned for at least 15 years",
   "baselineT0": null,
   "baselineT0Note": "Baseline over two years: 2026 plus 2027",
   "nextVerification": null,
@@ -406,7 +436,11 @@
     "clipRecorded": "2026-10-06T08:16:45",
     "clipRecorder": "SYN-5",
     "dataset": "ds-acoustics-raw",
-    "credit": "Synature, verified detection"
+    "credit": "Synature, verified detection",
+    "image": "data/projects/mellingen/images/species/meadow-pipit.jpg",
+    "imageCredit": "Andreas Trepte",
+    "imageLicence": "CC BY-SA 2.5",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Wiesenpieper_Meadow_pipit.jpg"
    },
    {
     "species": "Common Kestrel",
@@ -419,7 +453,11 @@
     "clipRecorded": "2026-10-07T07:22:05",
     "clipRecorder": "SYN-4",
     "dataset": "ds-acoustics-raw",
-    "credit": "Synature, verified detection"
+    "credit": "Synature, verified detection",
+    "image": "data/projects/mellingen/images/species/common-kestrel.jpg",
+    "imageCredit": "Andreas Trepte",
+    "imageLicence": "CC BY-SA 2.5",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Common_kestrel_falco_tinnunculus.jpg"
    },
    {
     "species": "Redwing",
@@ -432,7 +470,11 @@
     "clipRecorded": "2026-10-04T19:24:45",
     "clipRecorder": "SYN-5",
     "dataset": "ds-acoustics-raw",
-    "credit": "Synature, verified detection"
+    "credit": "Synature, verified detection",
+    "image": "data/projects/mellingen/images/species/redwing.jpg",
+    "imageCredit": "Andreas Trepte",
+    "imageLicence": "CC BY-SA 2.5",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Redwing_Turdus_iliacus.jpg"
    },
    {
     "species": "European Greenfinch",
@@ -445,7 +487,11 @@
     "clipRecorded": "2026-10-03T13:22:15",
     "clipRecorder": "SYN-5",
     "dataset": "ds-acoustics-raw",
-    "credit": "Synature, verified detection"
+    "credit": "Synature, verified detection",
+    "image": "data/projects/mellingen/images/species/european-greenfinch.jpg",
+    "imageCredit": "Martin Kunz",
+    "imageLicence": "CC BY 4.0",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Chloris_chloris_(profile).jpg"
    },
    {
     "species": "Eurasian Skylark",
@@ -458,7 +504,11 @@
     "clipRecorded": "2026-10-05T11:40:40",
     "clipRecorder": "SYN-1",
     "dataset": "ds-acoustics-raw",
-    "credit": "Synature, verified detection"
+    "credit": "Synature, verified detection",
+    "image": "data/projects/mellingen/images/species/eurasian-skylark.jpg",
+    "imageCredit": "User:Diliff",
+    "imageLicence": "CC BY-SA 3.0",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Skylark_2,_Lake_District,_England_-_June_2009.jpg"
    },
    {
     "species": "Common Kingfisher",
@@ -471,7 +521,11 @@
     "clipRecorded": "2026-10-06T13:40:45",
     "clipRecorder": "SYN-5",
     "dataset": "ds-acoustics-raw",
-    "credit": "Synature, verified detection"
+    "credit": "Synature, verified detection",
+    "image": "data/projects/mellingen/images/species/common-kingfisher.jpg",
+    "imageCredit": "Tony Wood",
+    "imageLicence": "CC BY 2.0",
+    "imageSource": "https://commons.wikimedia.org/wiki/File:Alcedo_atthis_-England-8_(cropped).jpg"
    }
   ],
   "sources": [
@@ -505,7 +559,8 @@
    }
   ],
   "exampleNote": "Grey-tagged figures are example data: they show what the page will display, not results. They are replaced by measured values as each partner delivers.",
-  "didYouKnow": "From the sound recorders at Mellingen, autumn 2026. Good to know, not part of the basket of five."
+  "didYouKnow": "From the sound recorders at Mellingen, autumn 2026. Good to know, not part of the basket of five.",
+  "place": "Mellingen"
  },
  "organisations": [
   {
@@ -531,9 +586,37 @@
   {
    "id": "pro-natura",
    "name": "Pro Natura Aargau",
-   "role": "Conservation partner, amphibian monitoring",
+   "role": "Project developer, land owner, amphibian monitoring",
    "type": "Conservation organisation",
    "url": "https://www.pronatura-ag.ch",
+   "logo": "data/projects/mellingen/logos/pro-natura.png",
+   "logoConfirmed": true,
+   "logoConfirmedOn": "2026-11-11"
+  },
+  {
+   "id": "pro-natura-ch",
+   "name": "Pro Natura",
+   "role": "Funder, land owner with Pro Natura Aargau",
+   "type": "Conservation organisation",
+   "url": "https://www.pronatura.ch",
+   "logo": null,
+   "logoConfirmed": false
+  },
+  {
+   "id": "canton-aargau",
+   "name": "Canton of Aargau",
+   "role": "Funder",
+   "type": "Public authority",
+   "url": "https://www.ag.ch",
+   "logo": null,
+   "logoConfirmed": false
+  },
+  {
+   "id": "ubs-optimus",
+   "name": "UBS Optimus Foundation",
+   "role": "Funder",
+   "type": "Foundation",
+   "url": null,
    "logo": null,
    "logoConfirmed": false
   },
@@ -561,8 +644,9 @@
    "role": "Airborne environmental DNA",
    "type": "Measurement provider",
    "url": "https://www.dnair.ch",
-   "logo": null,
-   "logoConfirmed": false
+   "logo": "data/projects/mellingen/logos/dnair.png",
+   "logoConfirmed": true,
+   "logoConfirmedOn": "2026-11-09"
   },
   {
    "id": "synature",
@@ -570,8 +654,9 @@
    "role": "Bioacoustic monitoring",
    "type": "Measurement provider",
    "url": "https://www.synature.ch",
-   "logo": null,
-   "logoConfirmed": false
+   "logo": "data/projects/mellingen/logos/synature.png",
+   "logoConfirmed": true,
+   "logoConfirmedOn": "2026-11-09"
   },
   {
    "id": "climate-farmers",
@@ -586,11 +671,12 @@
   {
    "id": "creanatira",
    "name": "creaNatira",
-   "role": "Project reporting",
+   "role": "Project developer with Pro Natura Aargau, project reporting",
    "type": "Nature consultancy",
    "url": null,
-   "logo": null,
-   "logoConfirmed": false
+   "logo": "data/projects/mellingen/logos/creanatira.png",
+   "logoConfirmed": true,
+   "logoConfirmedOn": "2026-11-11"
   },
   {
    "id": "vogelwarte",
@@ -607,8 +693,9 @@
    "role": "Pilot partner – role to be confirmed",
    "type": "Regenerative agriculture",
    "url": null,
-   "logo": null,
-   "logoConfirmed": false
+   "logo": "data/projects/mellingen/logos/agricultura-regeneratio.png",
+   "logoConfirmed": true,
+   "logoConfirmedOn": "2026-11-09"
   },
   {
    "id": "datamars-foundation",
@@ -1297,6 +1384,16 @@
  ],
  "timeline": [
   {
+   "date": "2025-08",
+   "event": "Äbereich secured for nature: farm bought by Pro Natura plus Pro Natura Aargau",
+   "status": "done",
+   "type": "intervention",
+   "by": [
+    "pro-natura-ch",
+    "pro-natura"
+   ]
+  },
+  {
    "date": "2026-10",
    "event": "Measurement basket fixed in MRV concept v8",
    "status": "done",
@@ -1304,12 +1401,9 @@
   },
   {
    "date": "2026-10",
-   "event": "Regenerative agriculture training on the farm starts",
+   "event": "Regenerative agriculture coaching on the farm starts",
    "status": "ongoing",
-   "type": "intervention",
-   "by": [
-    "climate-farmers"
-   ]
+   "type": "intervention"
   },
   {
    "date": "2026-10",
@@ -1337,27 +1431,39 @@
   },
   {
    "date": "2026-11",
-   "event": "Drone data route decided: OpenTopography",
-   "status": "done",
-   "type": "data"
-  },
-  {
-   "date": "2026-11",
    "event": "Existing amphibian records compiled",
    "status": "ongoing",
    "type": "measurement"
-  },
-  {
-   "date": "2026-11",
-   "event": "Entry created in the NFA Project Register",
-   "status": "done",
-   "type": "record"
   },
   {
    "date": "2026-Q4",
    "event": "BFI Stage 1 design review submitted",
    "status": "ongoing",
    "type": "review"
+  },
+  {
+   "date": "2027",
+   "event": "Ponds plus rewetting: fish-free ponds, wet meadows",
+   "status": "planned",
+   "type": "intervention"
+  },
+  {
+   "date": "2027",
+   "event": "Hedges plus margins planted",
+   "status": "planned",
+   "type": "intervention"
+  },
+  {
+   "date": "2027",
+   "event": "Fruit plus wild trees planted",
+   "status": "planned",
+   "type": "intervention"
+  },
+  {
+   "date": "2027",
+   "event": "Small structures: sand patches, stone plus branch piles",
+   "status": "planned",
+   "type": "intervention"
   },
   {
    "date": "2027",
@@ -1393,25 +1499,25 @@
  "changelog": [
   {
    "date": "2026-11-17",
-   "change": "Page split into a summary plus the full record. Basket of five shown at the top: habitat structure, plants, breeding birds, amphibians, earthworms (earthworms in, butterflies plus grasshoppers out). Fields added for project developer, funder, funding amount, measurement rounds, reference areas on the map. Interventions separated from measurement steps in the timeline."
+   "change": "Renamed to Mellingen – Biodiversity corridor (Äbereich plus Letzi). Summary plus full record views. Basket: earthworms in, butterflies plus grasshoppers out. Developers, funders, sites, reference area, work on the ground added. Logos confirmed: DNAir, Synature, agricultura regeneratio, Pro Natura Aargau, creaNatira."
   },
   {
    "date": "2026-11-11",
    "change": "Live acoustic monitoring added: autumn 2026 snapshot from Synature (detections, verified species, Red List birds, sounds)."
   },
   {
-   "date": "2026-11-08",
-   "change": "Entry created."
-  },
-  {
    "date": "2026-11-09",
    "change": "Climate Farmers logo use confirmed."
+  },
+  {
+   "date": "2026-11-08",
+   "change": "Entry created."
   }
  ],
  "_source": {
   "repo": "https://github.com/naturefinanceaccelerator/nfa-001-mellingen",
   "file": "https://raw.githubusercontent.com/naturefinanceaccelerator/nfa-001-mellingen/main/nfa-project.json",
   "origin": "github",
-  "collected": "2026-11-17T07:41Z"
+  "collected": "2026-11-17T10:09Z"
  }
 }

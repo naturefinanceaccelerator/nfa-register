@@ -21,7 +21,8 @@
   --ink: var(--black);          /* text */
   --accent: var(--mist);        /* stage chips, active tab pill, work-in-progress label */
   --label: var(--cobalt);       /* section labels */
-  --map-mark: var(--sky);       /* map pin, project outline */
+  --map-mark: var(--sky);       /* map dot of a project site, project outline */
+  --map-ref: #ef7d1a;           /* reference areas on the map: orange, the one colour outside the NFA palette */
 
   /* neutrals */
   --grey-700: #3d4741;
@@ -344,7 +345,7 @@ footer .bottom { display: flex; justify-content: space-between; gap: 24px; flex-
 .live-card figcaption b { display: block; font-size: 16px; font-weight: 500; }
 .live-card figcaption span { display: block; font-size: 12px; color: var(--grey-500); margin-top: 2px; }
 .live-card > small { font-size: 11px; margin-top: auto; }
-.live-note { font-size: 12px; color: var(--grey-500); margin: 14px 0 0; max-width: 980px; }
+.live-note { font-size: 12px; color: var(--grey-500); margin: 14px 0 0; }
 
 .chart-svg { width: 100%; height: auto; display: block; overflow: visible; }
 .chart-svg .b { fill: var(--teal); opacity: 0.85; transform-box: fill-box; transform-origin: bottom; }
@@ -431,8 +432,6 @@ footer .bottom { display: flex; justify-content: space-between; gap: 24px; flex-
 .photo-strip a:hover img { transform: scale(1.04); }
 .photo-strip figcaption { font-size: 12px; color: var(--grey-600); margin-top: 6px; }
 
-/* samples in the data section */
-table.samples td:first-child { width: 44px; }
 @media (max-width: 900px) { .photo-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .live-card figcaption .ex { display: inline-block; margin-top: 0; }
 
@@ -458,9 +457,10 @@ main[data-view="record"] .only-summary { display: none !important; }
 .basket { padding: 4px 0 28px; }
 .basket-grid { display: grid; grid-template-columns: minmax(280px, 340px) minmax(0, 1fr); }
 .ind { background: var(--forest); color: #fff; border-radius: 8px 0 0 8px; padding: 26px 30px 24px; display: flex; flex-direction: column; }
-.ind .label { margin-bottom: 22px; }
+.ind .label { margin-bottom: 20px; font-size: 13.5px; letter-spacing: 0.07em; font-weight: 600; white-space: nowrap; }
+.ind .label::before { width: 10px; height: 10px; }
 .ind-status { font-size: 20px; font-weight: 500; letter-spacing: -0.01em; }
-.ind-status.big { font-size: clamp(28px, 2.6vw, 36px); line-height: 1.1; letter-spacing: -0.02em; }
+.ind-status.big { font-size: clamp(22px, 2vw, 27px); line-height: 1.15; letter-spacing: -0.015em; }
 .ind-status span { display: block; font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.7); margin-top: 2px; letter-spacing: 0; }
 .ind-fig b { font-size: clamp(40px, 4vw, 56px); line-height: 1; font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; display: block; margin-bottom: 10px; }
 .ind-fig i { font-style: normal; font-size: 0.42em; vertical-align: 0.5em; margin-right: 0.3em; }
@@ -499,7 +499,11 @@ table.board .delta small { font-size: 11px; color: var(--grey-500); }
 .mark.missing { border: 0; border-radius: 0; height: 2px; width: 12px; background: var(--grey-500); }
 .board-key { display: flex; flex-wrap: wrap; gap: 6px 20px; margin: auto 0 0; padding-top: 12px; border-top: 1px solid var(--rule-light); font-size: 12px; color: var(--grey-600); }
 .board-key span { display: inline-flex; align-items: center; gap: 7px; }
-.board-key .muted { margin-left: auto; }
+.board-key .muted.push { margin-left: auto; }
+.block .board-key, .block p.wide { max-width: none; }
+.block p.fine { font-size: 12px; line-height: 1.6; color: var(--grey-500); margin: 14px 0 0; }
+.block p.fine span + span::before { content: " · "; }
+.block p.fine a { color: inherit; }   /* notes under a box run the full width */
 .key-ref { width: 16px; border-top: 1.5px dashed var(--grey-500); }
 
 /* ---------- map legend: project area plus reference areas */
@@ -508,9 +512,10 @@ table.board .delta small { font-size: 11px; color: var(--grey-500); }
 .map-legend li { display: inline-flex; align-items: center; gap: 7px; }
 .lg { display: inline-block; flex: none; }
 .lg.area { width: 16px; height: 11px; border: 2px solid var(--map-mark); background: color-mix(in srgb, var(--map-mark) 18%, #fff); border-radius: 2px; }
-.lg.site { width: 11px; height: 11px; border-radius: 3px; background: var(--map-mark); border: 2px solid var(--forest); }
-.lg.ref { width: 16px; height: 11px; border: 2px dashed var(--forest); background: #fff; border-radius: 2px; }
-.lg.ref.off { opacity: 0.45; }
+.lg.dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px var(--rule); }
+.lg.dot.site { background: var(--map-mark); }
+.lg.dot.ref { background: var(--map-ref); }
+.lg.dot.ref.off { opacity: 0.45; }
 
 /* ---------- summary sections */
 .ground, .about, .dyk { padding: 0 0 72px; scroll-margin-top: 90px; }
@@ -574,7 +579,7 @@ main[data-view="record"] .tabs { margin-top: 0; }
 @media (max-width: 900px) {
   .view-switch { width: 100%; }
   .view-switch button { flex: 1; padding: 9px 12px 10px; }
-  .board-key .muted { margin-left: 0; }
+  .board-key .muted.push { margin-left: 0; }
   .visual { margin-bottom: 40px; }
   .ground, .about, .dyk { padding-bottom: 52px; }
   .to-record-box { padding: 24px 22px; }
@@ -592,3 +597,60 @@ main[data-view="record"] .tabs { margin-top: 0; }
   .view-switch, .to-record { display: none !important; }
   main[data-view] .only-record, main[data-view] .only-summary { display: revert !important; }
 }
+
+/* ---------- map labels: site names next to their dots */
+.leaflet-tooltip.map-label { background: #fff; border: 0; border-radius: 4px; padding: 2px 7px 3px; font: 500 12px/1.3 var(--font); color: var(--ink); box-shadow: 0 1px 4px rgba(12,48,36,0.28); white-space: nowrap; }
+.leaflet-tooltip.map-label::before { display: none; }
+
+/* ---------- sound list: small species photos */
+.sound-list .sp-img { width: 44px; height: 44px; border-radius: 6px; object-fit: cover; flex: none; background: var(--blush); display: block; }
+.sounds.with-photos .sound-list li { grid-template-columns: 44px auto minmax(0, 1fr) auto auto; gap: 12px; }
+.photo-credits { display: block; margin-top: 10px; font-size: 11px; line-height: 1.5; }
+.photo-credits a { color: inherit; }
+
+/* ---------- sound list: short by default, the rest opens in place */
+.sounds.short .more { display: none; }
+.photo-credits span + span::before { content: " · "; }
+.show-more { margin: 10px 0 0; padding: 0; border: 0; background: none; font: inherit; font-size: 12px; color: var(--grey-700); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; align-self: flex-start; }
+.show-more:hover { color: var(--ink); }
+.show-more:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; }
+
+/* ---------- full record, decluttered: compact timeline, change list folded away */
+.timeline { max-width: 900px; }
+.timeline li { display: grid; grid-template-columns: 92px minmax(0, 1fr) auto; gap: 0 14px; align-items: baseline; padding: 0 0 11px 28px; }
+.timeline li::before { left: 5px; top: 12px; bottom: -6px; }
+.timeline li::after { top: 5px; width: 12px; height: 12px; }
+.timeline li.ongoing::after { box-shadow: 0 0 0 3px var(--mist); }
+.timeline .e { font-size: 14.5px; margin-top: 0; }
+.timeline .by { display: inline; margin: 0 0 0 8px; font-size: 12px; }
+.timeline .ty { margin-left: 0; }
+details.changes { margin-top: 26px; font-size: 12px; color: var(--grey-600); max-width: 900px; }
+details.changes summary { cursor: pointer; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--grey-500); }
+details.changes summary .muted { letter-spacing: 0; }
+details.changes ul { margin: 10px 0 0; padding-left: 16px; line-height: 1.55; }
+details.changes li { margin-bottom: 4px; }
+@media (max-width: 700px) {
+  .timeline li { grid-template-columns: minmax(0, 1fr) auto; }
+  .timeline .d { grid-column: 1 / -1; }
+}
+
+/* ---------- full record tables, compact: the name of each row stands out, everything else steps back */
+table.reg { font-size: 13px; color: var(--grey-700); }
+table.reg th { font-size: 10px; padding: 8px 14px 8px 0; }
+table.reg td { padding: 10px 14px 10px 0; line-height: 1.45; }
+table.reg td:first-child b { font-size: 14.5px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+table.reg td .sub { font-size: 12px; margin-top: 2px; color: var(--grey-500); }
+table.reg .chip { font-size: 10px; padding: 3px 8px; }
+table.reg .access { font-size: 12.5px; gap: 2px; }
+table.reg .access .k { font-weight: 500; color: var(--ink); }
+table.reg .access small { font-size: 11.5px; }
+table.reg tr.has-terms td { padding-bottom: 4px; }
+table.reg tr.terms-row td { padding-bottom: 12px; }
+.terms { font-size: 12.5px; gap: 4px 28px; }
+.terms span { font-size: 10px; }
+.block { padding-bottom: 48px; }
+.block h3 { margin: 26px 0 8px; font-size: 12px; }
+.p-body > div > .block:last-child { padding-bottom: 0; }
+.p-body { padding-bottom: 72px; }
+table.reg .access a.k { text-decoration: none; }
+table.reg .access a.k:hover { text-decoration: underline; }

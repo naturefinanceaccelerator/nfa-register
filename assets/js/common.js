@@ -55,8 +55,9 @@ const NFA = (() => {
       else if (item.url) detail = `<a href="${esc(item.url)}" target="_blank" rel="noopener">Open ↗</a>`;
       else detail = `<small>Link follows on publication</small>`;
     } else if (d === "on-request") {
-      detail = `<a href="${mailto(project, item.title)}">${esc(project.contact || CONTACT)}</a>`;
-      if (item.reason) detail += `<small>${esc(item.reason)}</small>`;
+      // the label itself is the mail link: one line per row instead of two
+      const ask = `<a class="k" href="${mailto(project, item.title)}" title="Request by mail: ${esc(project.contact || CONTACT)}">${esc(label)} ✉</a>`;
+      return `<div class="access ${esc(d)}">${ask}${item.reason ? `<small>${esc(item.reason)}</small>` : ""}</div>`;
     } else {
       detail = `<small>${esc(item.reason || "Reason to be stated")}</small>`;
     }

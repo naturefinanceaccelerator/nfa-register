@@ -49,6 +49,10 @@
   }
   const [amountText, amountNote] = amount(funding.amount);
 
+  /* ---------- project sites: a project can have several, each shown as a dot on the map */
+  const sites = loc.sites || [];
+  const siteList = sites.map((x) => `${esc(x.name)}${x.municipality ? `, ${esc(x.municipality)}` : ""}${x.areaHa != null ? ` (${nf(x.areaHa, Number.isInteger(x.areaHa) ? 0 : 1)} ha)` : ""}`).join(" · ");
+
   /* ---------- measurement rounds plus the basket of core metrics */
   const rounds = p.schedule || [];
   const basket = p.measurements.filter((x) => x.group === "core");
@@ -105,7 +109,7 @@
             ${rounds.map((r, i) => boardCell(mm, r, i)).join("")}
             ${anyChange ? (changes[k] ? `<td class="chg"><div class="chg-in">${spark(changes[k])}<span class="delta"><b>${changes[k].pct > 0 ? "▲" : changes[k].pct < 0 ? "▼" : "■"} ${signed(changes[k].pct, Math.abs(changes[k].pct) < 10 ? 1 : 0)} %</b><small>to ${esc(changes[k].to.years)}</small></span></div></td>` : `<td class="chg muted">–</td>`) : ""}</tr>`).join("")}
         </tbody></table></div>
-      <p class="board-key">${[["available", "Measured"], ["in-progress", "Under way"], ["planned", "Planned"], ["missing", "No value"]].filter(([k]) => used.has(k) && k !== "available").map(([k, t]) => `<span><i class="mark ${k}"></i>${t}</span>`).join("")}${anyRef ? `<span><i class="key-ref"></i>Reference areas</span>` : ""}${!anyChange && firstRepeat ? `<span class="muted">First comparison against the baseline: ${esc(firstRepeat)}</span>` : ""}</p>`;
+      <p class="board-key">${[["available", "Measured"], ["in-progress", "Under way"], ["planned", "Planned"], ["missing", "No value"]].filter(([k]) => used.has(k) && k !== "available").map(([k, t]) => `<span><i class="mark ${k}"></i>${t}</span>`).join("")}${anyRef ? `<span><i class="key-ref"></i>Reference areas</span>` : ""}${[!anyChange && firstRepeat ? `First comparison against the baseline: ${esc(firstRepeat)}` : "", esc(p.dates.durationNote || "")].filter(Boolean).map((t, i) => `<span class="muted${i ? "" : " push"}">${t}</span>`).join("")}</p>`;
   }
 
   /* ---------- the headline indicator. Set in the project file by NFA; the page never computes it. */
@@ -143,7 +147,7 @@
       <div><dt>${funders.length > 1 ? "Funders" : "Funder"}</dt><dd>${orgList(funders, funding.fundersNote)}</dd></div>
       <div><dt>Funding</dt><dd>${esc(amountText)}<small>${esc(amountNote)}</small></dd></div>
       <div><dt>Location</dt><dd>${esc(loc.municipality || "–")}<small>${esc((loc.cantons || []).map((c) => CANTONS[c] || c).join(", "))}</small></dd></div>
-      <div><dt>Area</dt><dd>${esc(area(p))}<small>${loc.areaPrecision === "approximate" ? "approximate" : "from boundary"}</small></dd></div>
+      <div><dt>Area</dt><dd>${esc(area(p))}<small>${sites.length > 1 ? `${sites.length} sites: ${esc(sites.map((x) => x.name).join(", "))}` : loc.areaPrecision === "approximate" ? "approximate" : "from boundary"}</small></dd></div>
       <div><dt>Baseline</dt><dd>${esc(rounds[0] ? rounds[0].years : p.dates.baselineT0 ? fmtDate(p.dates.baselineT0) : "Pending")}<small>${esc(rounds[0] ? (rounds[0].status === "done" ? "complete" : rounds[0].status === "in-progress" ? "under way" : "planned") : (p.dates.baselineT0Note || ""))}</small></dd></div>
     </dl>
     <div class="views">
@@ -162,8 +166,9 @@
       ${hero ? `<figure><img src="${esc(hero.src)}" alt="${esc(hero.alt)}"><figcaption>${esc(hero.credit ? "Photo: " + hero.credit : "")}</figcaption></figure>` : `<figure><div class="ph" style="height:420px;border-radius:8px;background:var(--blush)"></div></figure>`}
       <div class="map-box"><div class="map" id="pmap" role="region" aria-label="Project area plus reference areas"></div>
         <ul class="map-legend" id="legend">
-          <li>${loc.boundary ? `<i class="lg area"></i>Project area${loc.boundaryStatus && loc.boundaryStatus !== "surveyed" ? ` (${esc(loc.boundaryStatus)})` : ""}` : `<i class="lg site"></i>Project site, ${esc(loc.pointPrecision || "approximate")} level <span class="muted">· boundary follows</span>`}</li>
-          <li id="legendRef">${loc.referenceAreas ? `<i class="lg ref"></i>Reference areas${loc.referenceAreasStatus && loc.referenceAreasStatus !== "surveyed" ? ` (${esc(loc.referenceAreasStatus)})` : ""}` : `<i class="lg ref off"></i><span class="muted">Reference areas: ${esc(loc.referenceAreasNote ? "outlines follow" : "not on the map yet")}</span>`}</li>
+          <li>${sites.length ? `<i class="lg dot site"></i>${sites.length > 1 ? "Project sites" : "Project site"}: ${esc(sites.map((x) => x.name).join(", "))}${loc.boundary ? "" : ` <span class="muted">· boundaries follow</span>`}` : loc.boundary ? `<i class="lg area"></i>Project area${loc.boundaryStatus && loc.boundaryStatus !== "surveyed" ? ` (${esc(loc.boundaryStatus)})` : ""}` : `<i class="lg dot site"></i>Project site, ${esc(loc.pointPrecision || "approximate")} level <span class="muted">· boundary follows</span>`}</li>
+          ${loc.boundary && sites.length ? `<li><i class="lg area"></i>Project area${loc.boundaryStatus && loc.boundaryStatus !== "surveyed" ? ` (${esc(loc.boundaryStatus)})` : ""}</li>` : ""}
+          <li id="legendRef">${loc.referenceAreas ? `<i class="lg dot ref"></i>Reference areas${loc.referenceAreasStatus && loc.referenceAreasStatus !== "surveyed" ? ` (${esc(loc.referenceAreasStatus)})` : ""}` : `<i class="lg dot ref off"></i><span class="muted">Reference areas: ${esc(loc.referenceAreasNote ? "locations follow" : "not on the map yet")}</span>`}</li>
         </ul>
       </div>
     </div>
@@ -218,24 +223,38 @@
     </figure>`;
 
   function soundRow(x, compact) {
-    return `<button type="button" class="play" data-src="${esc(x.src || "")}" ${x.src ? "" : "disabled"} aria-label="${x.src ? "Play" : "No clip yet for"} ${esc(x.species)}" title="${x.src ? "Play the recording" : "Clip follows"}"><svg viewBox="0 0 16 16" aria-hidden="true"><path class="i-play" d="M5 3.5v9l7.5-4.5z"/><path class="i-pause" d="M4.5 3.5h2.6v9H4.5zM8.9 3.5h2.6v9H8.9z"/></svg></button>`;
+    return `<button type="button" class="play" data-src="${esc(x.src || "")}" ${x.src ? "" : "disabled"} aria-label="${x.src ? "Play" : "No clip yet for"} ${esc(x.species)}" title="${x.src ? esc(["Play the recording", x.clipRecorder, x.clipRecorded ? fmtDate(x.clipRecorded.slice(0, 10)) + " " + x.clipRecorded.slice(11, 16) : ""].filter(Boolean).join(" · ")) : "Clip follows"}"><svg viewBox="0 0 16 16" aria-hidden="true"><path class="i-play" d="M5 3.5v9l7.5-4.5z"/><path class="i-pause" d="M4.5 3.5h2.6v9H4.5zM8.9 3.5h2.6v9H8.9z"/></svg></button>`;
   }
 
   const drawChart = (c) => (c.type === "bars" ? barsChart(c) : c.type === "hbars" ? hbarsChart(c) : splitChart(c, false));
 
+  /** Sound list, most threatened first. Both views show a short list (monitoring.summarySounds, default 3);
+      a button under the list opens the rest in place. */
+  const THREAT = ["RE", "CR", "EN", "VU", "NT", "LC"];
   function soundsCard(m) {
-    const sounds = (m.sounds || []).slice().sort((a, b) => (b.lastHeard || "").localeCompare(a.lastHeard || ""));
+    const rank = (x) => { const i = THREAT.indexOf(x.redList); return i < 0 ? THREAT.length : i; };
+    const sounds = (m.sounds || []).slice().sort((a, b) => rank(a) - rank(b) || (b.lastHeard || "").localeCompare(a.lastHeard || ""));
+    const limit = m.summarySounds || 3, more = sounds.length > limit;
+    const photos = sounds.some((x) => x.image);
+    const credits = sounds.map((x, i) => {
+      if (!x.image || !(x.imageCredit || x.imageLicence)) return "";
+      const who = [x.imageCredit, x.imageLicence].filter(Boolean).map(esc).join(", ");
+      return `<span${i >= limit ? ` class="more"` : ""}>${esc(x.species)}: ${x.imageSource ? `<a href="${esc(x.imageSource)}" target="_blank" rel="noopener">${who}</a>` : who}</span>`;
+    }).filter(Boolean);
     return sounds.length ? `
-        <figure class="live-card sounds">
-          <figcaption><b>Heard at ${esc(loc.municipality || p.name)}</b><span>Red List birds, last heard first</span><span class="src">${srcLine("acoustics")}</span></figcaption>
-          <ul class="sound-list">${sounds.map((x) => `
-            <li>
+        <figure class="live-card sounds${photos ? " with-photos" : ""}${more ? " short" : ""}">
+          <figcaption><b>Heard at ${esc(m.place || loc.municipality || p.name)}</b><span>Red List birds, most threatened first</span><span class="src">${srcLine("acoustics")}</span></figcaption>
+          <ul class="sound-list">${sounds.map((x, i) => `
+            <li${i >= limit ? ` class="more"` : ""}>
+              ${photos ? (x.image ? `<img class="sp-img" src="${esc(x.image)}" alt="${esc(x.species)}" title="${esc([x.imageCredit, x.imageLicence].filter(Boolean).join(", "))}" width="44" height="44">` : `<span class="sp-img none" aria-hidden="true"></span>`) : ""}
               ${soundRow(x)}
               <span class="sp"><b>${esc(x.species)}</b><i>${esc(x.latin || "")}</i></span>
               ${x.redList ? `<span class="rl rl-${esc(x.redList)}" title="${esc(RED[x.redList] || x.redList)}">${esc(x.redList)}</span>` : ""}
               <span class="when">${x.lastHeard ? esc(short(x.lastHeard)) : ""}<small>${x.detections != null ? `${nf(x.detections)} calls` : ""}</small></span>
             </li>`).join("")}</ul>
+          ${more ? `<button type="button" class="show-more" data-all="Show all ${sounds.length} recordings" data-fewer="Show fewer" aria-expanded="false">Show all ${sounds.length} recordings</button>` : ""}
           ${sounds.some((x) => !x.src) ? `<small class="muted">Grey buttons: recording follows.</small>` : ""}
+          ${credits.length ? `<small class="muted photo-credits">Photos: ${credits.join("")}</small>` : ""}
         </figure>` : "";
   }
 
@@ -312,11 +331,13 @@
       ${m.basis ? `<dt>Basis</dt><dd>${esc(m.basis)}</dd>` : ""}
       ${m.design ? `<dt>Design</dt><dd>${esc(m.design)}</dd>` : ""}
       ${m.review ? `<dt>Review</dt><dd>${esc(m.review)}</dd>` : ""}
+      ${p.dates.durationNote ? `<dt>Duration</dt><dd>${esc(p.dates.durationNote)}</dd>` : ""}
       ${p.landUse ? `<dt>Land use</dt><dd>${esc(p.landUse)}</dd>` : ""}
       ${(p.ecosystem || []).length ? `<dt>Ecosystem</dt><dd>${esc(p.ecosystem.join(", "))}</dd>` : ""}
       <dt>Project developer</dt><dd>${orgList(developers, p.developersNote)}</dd>
       <dt>${funders.length > 1 ? "Funders" : "Funder"}</dt><dd>${orgList(funders, funding.fundersNote)}</dd>
       <dt>Funding</dt><dd>${esc(amountText)}${amountNote ? ` <span class="muted">· ${esc(amountNote)}</span>` : ""}</dd>
+      ${sites.length ? `<dt>${sites.length > 1 ? "Sites" : "Site"}</dt><dd>${siteList}</dd>` : ""}
       <dt>Location</dt><dd>${esc(NFA.places(loc.cantons, loc.municipality))} · ${loc.point[1].toFixed(3)}° N, ${loc.point[0].toFixed(3)}° E <span class="muted">(${esc(loc.pointPrecision || "")} level)</span></dd>
     </dl>
   </section>`;
@@ -343,15 +364,17 @@
     <h2>What is measured</h2>
     ${basket.length && rounds.length ? `<h3 style="margin-top:0">Basket over time</h3>
     <div class="basket-board in-record">${board()}</div>
-    ${out.method ? `<p class="muted" style="font-size:13px;margin-top:14px">Headline indicator: ${esc(OUT[out.status] || out.status)}. ${esc(out.method)}</p>` : ""}
+    ${out.method ? `<p class="muted wide" style="font-size:13px;margin-top:14px">Headline indicator: ${esc(OUT[out.status] || out.status)}. ${esc(out.method)}</p>` : ""}
     <h3>Methods</h3>` : ""}
     <table class="reg"><thead><tr><th>Metric</th><th>Method</th><th>Provider</th><th>Frequency</th><th>Status</th></tr></thead><tbody>${mRows}</tbody></table>
   </section>`;
 
   /* ---------- data */
+  const clipSets = {};   // datasets that have sample clips in the sound list
+  ((p.monitoring || {}).sounds || []).forEach((x) => { if (x.dataset && x.src) clipSets[x.dataset] = (clipSets[x.dataset] || 0) + 1; });
   const dRows = p.datasets.map((d) => `
     <tr id="${esc(d.id)}">
-      <td data-h="Dataset"><b>${esc(d.title)}</b>${d.note ? `<span class="sub">${esc(d.note)}</span>` : ""}${d.creators && d.creators.length ? `<span class="sub">Creators: ${d.creators.map(esc).join(", ")}</span>` : ""}</td>
+      <td data-h="Dataset"><b>${esc(d.title)}</b>${d.note ? `<span class="sub">${esc(d.note)}</span>` : ""}${d.creators && d.creators.length ? `<span class="sub">Creators: ${d.creators.map(esc).join(", ")}</span>` : ""}${clipSets[d.id] ? `<span class="sub"><a href="#live">${clipSets[d.id]} sample clips to play under “Heard at …” ↑</a></span>` : ""}</td>
       <td data-h="Provider">${names(d.provider)}</td>
       <td data-h="Repository">${d.repository ? (d.repositoryUrl ? `<a href="${esc(d.repositoryUrl)}" target="_blank" rel="noopener">${esc(d.repository)}</a>` : esc(d.repository)) : `<span class="muted">–</span>`}
         <span class="sub">${esc([d.format, d.crs].filter(Boolean).join(" · "))}</span></td>
@@ -359,25 +382,13 @@
       <td data-h="Status">${chip(d.status)}</td>
       <td data-h="Access">${access(d, p)}</td>
     </tr>`).join("");
-  const layers = (p.referenceLayers || []).map((r) => `
-    <tr><td data-h="Layer"><b>${esc(r.title)}</b></td><td data-h="Holder">${esc(r.holder)}</td><td data-h="Licence">${esc(r.licence || "")}</td><td data-h="Link"><a href="${esc(r.url)}" target="_blank" rel="noopener">Source ↗</a></td></tr>`).join("");
-  const sampleList = ((p.monitoring || {}).sounds || []).filter((x) => x.dataset);
-  const samples = sampleList.length ? `
-    <h3 id="samples">Samples</h3>
-    <p>Short clips from the recordings, one per Red List bird, each a detection checked by a Synature expert.</p>
-    <table class="reg samples"><thead><tr><th></th><th>Sample</th><th>Recorded</th><th>Recorder</th><th>From dataset</th></tr></thead><tbody>${sampleList.map((x) => `
-      <tr><td data-h="">${soundRow(x)}</td>
-        <td data-h="Sample"><b>${esc(x.species)}</b><span class="sub"><i>${esc(x.latin || "")}</i>${x.redList ? ` · Red List ${esc(x.redList)}` : ""}</span></td>
-        <td data-h="Recorded">${x.clipRecorded ? esc(fmtDate(x.clipRecorded.slice(0, 10))) + `<span class="sub">${esc(x.clipRecorded.slice(11, 16))}</span>` : "–"}</td>
-        <td data-h="Recorder">${esc(x.clipRecorder || "–")}</td>
-        <td data-h="From dataset"><a href="#${esc(x.dataset)}">${esc((p.datasets.find((d) => d.id === x.dataset) || {}).title || x.dataset)}</a>${x.src ? "" : `<span class="sub">Clip follows</span>`}</td></tr>`).join("")}</tbody></table>` : "";
+  const layers = (p.referenceLayers || []).map((r) => `<span>${r.url ? `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>` : esc(r.title)}${[r.holder, r.licence].filter(Boolean).length ? ` (${[r.holder, r.licence].filter(Boolean).map(esc).join(", ")})` : ""}</span>`).join("");
   const data = `
   <section class="block" id="data">
     <div class="label">Data</div>
     <h2>Datasets</h2>
     <table class="reg"><thead><tr><th>Dataset</th><th>Provider</th><th>Repository</th><th>Licence</th><th>Status</th><th>Access</th></tr></thead><tbody>${dRows}</tbody></table>
-    ${samples}
-    ${layers ? `<h3>Third-party reference layers</h3><table class="reg"><thead><tr><th>Layer</th><th>Holder</th><th>Licence</th><th>Link</th></tr></thead><tbody>${layers}</tbody></table>` : ""}
+    ${layers ? `<p class="fine wide">Third-party reference layers: ${layers}</p>` : ""}
   </section>`;
 
   /* ---------- agreements */
@@ -388,15 +399,15 @@
     if (a.claimRights) t.push(term("Claim rights", esc(a.claimRights)));
     if (a.signed) t.push(term("Signed", esc(fmtDate(a.signed))));
     if (a.term) t.push(term("Term", esc(a.term)));
-    t.push(term("Fees", a.fees && a.fees !== "not-disclosed" ? esc(a.fees) : "Not disclosed"));
+    if (a.fees && a.fees !== "not-disclosed") t.push(term("Fees", esc(a.fees)));   // otherwise the line above the table says it once
     return `
-    <tr id="${esc(a.id)}" class="has-terms">
+    <tr id="${esc(a.id)}"${t.length ? ` class="has-terms"` : ""}>
       <td data-h="Agreement"><b>${esc(a.title)}</b><span class="sub">${esc(a.type || "")}</span></td>
       <td data-h="Parties">${names(a.parties)}</td>
       <td data-h="Status">${chip(a.status)}</td>
       <td data-h="Access">${access(a, p)}</td>
     </tr>
-    <tr class="terms-row"><td colspan="4" data-h="Key terms"><div class="terms">${t.join("")}</div></td></tr>`;
+    ${t.length ? `<tr class="terms-row"><td colspan="4" data-h="Key terms"><div class="terms">${t.join("")}</div></td></tr>` : ""}`;
   }).join("");
   const docRows = docs.map((d) => `
     <tr><td data-h="Document"><b>${esc(d.title)}</b>${d.author ? `<span class="sub">${esc(orgs[d.author]?.name || d.author)}</span>` : ""}</td>
@@ -450,8 +461,8 @@
   <section class="block" id="timeline">
     <div class="label">Timeline</div>
     <h2>Milestones</h2>
-    <ol class="timeline">${steps.map((t) => `<li class="${esc(t.status)}"><div class="d">${esc(when(t.date))}${t.status === "ongoing" ? " · ongoing" : ""}${t.type ? `<span class="ty ${esc(t.type)}">${esc(TYPES[t.type] || t.type)}</span>` : ""}</div><div class="e">${esc(t.event)}${(t.by || []).length ? `<span class="by">${names(t.by)}</span>` : ""}</div></li>`).join("")}</ol>
-    ${(p.changelog || []).length ? `<h3>Changes to this record</h3><ul style="padding-left:18px;margin:0;color:var(--grey-700);font-size:14px">${p.changelog.map((c) => `<li><span class="mono">${esc(c.date)}</span> ${esc(c.change)}</li>`).join("")}</ul>` : ""}
+    <ol class="timeline">${steps.map((t) => `<li class="${esc(t.status)}"><span class="d">${esc(when(t.date))}</span><span class="e">${esc(t.event)}${t.status === "ongoing" || t.status === "planned" || (t.by || []).length ? `<span class="by">${[t.status === "ongoing" ? "ongoing" : t.status === "planned" ? "planned" : "", (t.by || []).length ? names(t.by) : ""].filter(Boolean).join(" · ")}</span>` : ""}</span>${t.type ? `<span class="ty ${esc(t.type)}">${esc(TYPES[t.type] || t.type)}</span>` : "<span></span>"}</li>`).join("")}</ol>
+    ${(p.changelog || []).length ? `<details class="changes"><summary>Changes to this record <span class="muted">· ${p.changelog.length}</span></summary><ul>${p.changelog.map((c) => `<li><span class="mono">${esc(c.date)}</span> ${esc(c.change)}</li>`).join("")}</ul></details>` : ""}
   </section>`;
 
   function ground() {
@@ -486,6 +497,7 @@
       <div class="about-grid">
         <div><p class="lead">${esc(p.summary)}</p>${(p.description || []).slice(0, 1).map((d) => `<p>${esc(d)}</p>`).join("")}</div>
         <dl class="kv">
+          ${sites.length ? `<dt>${sites.length > 1 ? "Sites" : "Site"}</dt><dd>${siteList}</dd>` : ""}
           ${(p.ecosystem || []).length ? `<dt>Ecosystem</dt><dd>${esc(p.ecosystem.join(", "))}</dd>` : ""}
           ${p.landUse ? `<dt>Land use</dt><dd>${esc(p.landUse)}</dd>` : ""}
           ${m0.design ? `<dt>How change is read</dt><dd>${esc(m0.design)}</dd>` : ""}
@@ -577,37 +589,45 @@
     }
   });
 
-  /* ---------- map: project area (or site pin) plus reference areas */
+  /* ---------- map: project sites as blue dots (plus the outline once the boundary is in), reference areas in orange */
   const map = makeMap("pmap", { imagery: true });
   const ll = [loc.point[1], loc.point[0]];
+  const blue = NFA.cssVar("--map-mark"), orange = NFA.cssVar("--map-ref");
   let bounds = null;
-  const grow = (layer) => { const b = layer.getBounds(); if (b.isValid()) bounds = bounds ? bounds.extend(b) : L.latLngBounds(b.getSouthWest(), b.getNorthEast()); };
+  const reach = (b) => { if (b && b.isValid()) bounds = bounds ? bounds.extend(b) : L.latLngBounds(b.getSouthWest(), b.getNorthEast()); };
+  const dot = (at, colour, label) => {
+    const mk = L.circleMarker(at, { radius: 8, color: "#fff", weight: 2.5, fillColor: colour, fillOpacity: 1 });
+    if (label) mk.bindTooltip(esc(label), { permanent: true, direction: "right", offset: [10, 0], className: "map-label" });
+    reach(L.latLngBounds(at, at));
+    return mk;
+  };
   if (loc.boundary) {
     try {
       const gj = await getJSON(loc.boundary);
-      const line = NFA.cssVar("--map-mark");
-      grow(L.geoJSON(gj, { style: { color: line, weight: 3, fillColor: line, fillOpacity: 0.15 } }).bindTooltip("Project area", { sticky: true }).addTo(map));
-    } catch { /* falls back to the pin below */ }
+      reach(L.geoJSON(gj, { style: { color: blue, weight: 3, fillColor: blue, fillOpacity: 0.15 } }).bindTooltip("Project area", { sticky: true }).addTo(map).getBounds());
+    } catch { /* the dots below still show where the project is */ }
   }
-  if (!bounds) L.marker(ll, { icon: pin(), title: p.name }).addTo(map);
+  if (sites.length) sites.forEach((x) => dot([x.point[1], x.point[0]], blue, x.name).addTo(map));
+  else if (!bounds) dot(ll, blue, null).addTo(map);
   if (loc.referenceAreas) {
     try {
       const gj = await getJSON(loc.referenceAreas);
-      // dark casing under a white dashed line: readable on the aerial image and on the grey map
-      const casing = L.geoJSON(gj, { style: { color: NFA.cssVar("--forest"), weight: 5, opacity: 0.9, fill: false }, pointToLayer: (f, at) => L.circleMarker(at, { radius: 9 }) }).addTo(map);
-      L.geoJSON(gj, {
-        style: { color: "#fff", weight: 2, dashArray: "6 5", fillColor: "#fff", fillOpacity: 0.12 },
-        pointToLayer: (f, at) => L.circleMarker(at, { radius: 8 }),
-        onEachFeature: (f, layer) => layer.bindTooltip(`Reference area${f.properties && f.properties.name ? ": " + esc(f.properties.name) : ""}`, { sticky: true })
-      }).addTo(map);
-      grow(casing);
       const n = (gj.features || []).length;
-      if (n) document.getElementById("legendRef").insertAdjacentHTML("beforeend", ` <span class="muted">· ${n}</span>`);
-    } catch {
-      document.getElementById("legendRef").innerHTML = `<i class="lg ref off"></i><span class="muted">Reference areas: file could not be loaded</span>`;
+      L.geoJSON(gj, {
+        style: (ft) => (ft.geometry && ft.geometry.type === "Point" ? {} : { color: orange, weight: 2.5, fillColor: orange, fillOpacity: 0.18 }),
+        pointToLayer: (ft, at) => dot(at, orange, (ft.properties && ft.properties.name) || "Reference area"),
+        onEachFeature: (ft, layer) => {
+          if (ft.geometry && ft.geometry.type !== "Point") { layer.bindTooltip(esc((ft.properties && ft.properties.name) || "Reference area"), { sticky: true }); reach(layer.getBounds()); }
+        }
+      }).addTo(map);
+      if (n) document.getElementById("legendRef").innerHTML = `<i class="lg dot ref"></i>${n === 1 ? "Reference area" : `Reference areas <span class="muted">· ${n}</span>`}${loc.referenceAreasStatus && loc.referenceAreasStatus !== "surveyed" ? ` (${esc(loc.referenceAreasStatus)})` : ""}`;
+    } catch (e) {
+      console.warn("Reference areas:", e);
+      document.getElementById("legendRef").innerHTML = `<i class="lg dot ref off"></i><span class="muted">Reference areas: file could not be loaded</span>`;
     }
   }
-  if (bounds) { if (!loc.boundary) bounds.extend(ll); map.fitBounds(bounds, { padding: [28, 28] }); }
+  const spread = bounds && !bounds.getSouthWest().equals(bounds.getNorthEast());
+  if (spread) map.fitBounds(bounds, { paddingTopLeft: [44, 44], paddingBottomRight: [130, 44], maxZoom: 16 });   // room for the labels right of the dots
   else map.setView(ll, loc.pointPrecision === "municipality" ? 14 : 16);
 
 
@@ -639,6 +659,13 @@
     const stop = () => { if (playing) playing.classList.remove("on"); playing = null; };
     player.addEventListener("ended", stop);
     main.addEventListener("click", (e) => {
+      const sm = e.target.closest("button.show-more");
+      if (sm) {   // open or close the rest of the sound list
+        const open = sm.closest(".sounds").classList.toggle("short") === false;
+        sm.textContent = open ? sm.dataset.fewer : sm.dataset.all;
+        sm.setAttribute("aria-expanded", open);
+        return;
+      }
       const b = e.target.closest("button.play");
       if (!b || b.disabled) return;
       if (playing === b) { player.pause(); stop(); return; }
