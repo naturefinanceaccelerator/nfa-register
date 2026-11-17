@@ -654,3 +654,23 @@ table.reg tr.terms-row td { padding-bottom: 12px; }
 .p-body { padding-bottom: 72px; }
 table.reg .access a.k { text-decoration: none; }
 table.reg .access a.k:hover { text-decoration: underline; }
+
+/* Full record: metric, method, provider plus data under each basket title (replaces the basket rows of the methods table). */
+table.board tbody th span.how { font-size: 12px; line-height: 1.4; margin-top: 3px; color: var(--grey-600); }
+table.board tbody th span.how + span.how { margin-top: 1px; color: var(--grey-500); }
+table.board tbody th span.how a { color: inherit; text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 2px; }
+table.board tbody th span.how .muted { color: inherit; }
+.in-record table.board tbody th { width: 46%; padding-top: 12px; padding-bottom: 12px; }
+@media (max-width: 720px) {
+  .in-record table.board { min-width: 720px; }
+  .in-record table.board tbody th span.how { display: block; font-size: 11px; }
+  .in-record table.board tbody th, .in-record table.board thead th:first-child { min-width: 210px; max-width: 230px; width: auto; }
+}
+table.board tbody th span.how span { display: inline; font-size: inherit; margin: 0; }
+
+/* "Did you know?": figures plus the strip span the same width as the three boxes below them. */
+.dyk-facts { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 24px 20px; }
+.dyk-strip { max-width: none; }
+@media (max-width: 760px) { .dyk-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Organisations grouped by role. */
+#organisations h3 + .orgs { margin-bottom: 4px; }

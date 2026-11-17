@@ -11,7 +11,7 @@
  "description": [
   "The corridor has two sites so far. The Äbereich in Mellingen: about 15 ha around a farm that stays in production, owned by Pro Natura plus Pro Natura Aargau since August 2025. The Letzi in Fischbach-Göslikon: about 5 ha that extend the corridor towards the wet meadows of the Reuss valley. Further areas are to follow.",
   "Planned work on the ground: ponds plus rewetting, hedges plus margins, fruit plus wild trees, small structures such as sand patches plus stone piles, extensive meadows plus pasture. The aim is a connected set of habitats for amphibians, breeding birds plus other species that move between river, open land plus forest.",
-  "NFA designs the measurement, coordinates the partners, holds the evidence chain and publishes what can be published. The method adapts the open Wallacea Trust methodology to Swiss conditions: a field baseline, repeated measurements over time, independent review.",
+  "NFA designs the measurement, coordinates the partners, holds the evidence chain and publishes what can be published. The method: a field baseline, repeated measurements over time, independent review.",
   "Change in the corridor is read against lightly sampled reference areas, so the effect of the project can be separated from what happens in the wider landscape anyway."
  ],
  "location": {
@@ -1518,6 +1518,6 @@
   "repo": "https://github.com/naturefinanceaccelerator/nfa-001-mellingen",
   "file": "https://raw.githubusercontent.com/naturefinanceaccelerator/nfa-001-mellingen/main/nfa-project.json",
   "origin": "github",
-  "collected": "2026-11-17T10:09Z"
+  "collected": "2026-11-17T15:01Z"
  }
 }

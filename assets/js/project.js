@@ -96,8 +96,15 @@
   }
 
   /** The basket board: one row per core metric, one column per measurement round. */
-  function board() {
+  function board(detail) {
     if (!basket.length || !rounds.length) return "";
+    // In the full record each basket row also carries metric, method, provider plus data links.
+    const how = (mm) => {
+      const l1 = [mm.indicator ? esc(mm.indicator) + (mm.unit ? `, ${esc(mm.unit)}` : "") + (mm.structural ? " (structural)" : "") : "", esc(mm.method || "")].filter(Boolean).join(" · ");
+      const data = (mm.datasets || []).map((d) => `<a href="#${esc(d)}">${esc((p.datasets.find((y) => y.id === d) || {}).title || d)}</a>`).join(", ");
+      const l2 = [names(mm.provider, mm.providerNote), esc(mm.frequency || ""), esc(mm.statusNote || "")].filter(Boolean).join(" · ");
+      return `${l1 ? `<span class="how">${l1}</span>` : ""}${l2 ? `<span class="how">${l2}</span>` : ""}${data ? `<span class="how">Data: ${data}</span>` : ""}`;
+    };
     const changes = basket.map(change), anyChange = changes.some(Boolean), anyRef = basket.some((mm) => (mm.series || []).some((x) => x.reference != null));
     const used = new Set();
     basket.forEach((mm) => rounds.forEach((r, i) => used.add(cellState(mm, r, i))));
@@ -105,7 +112,7 @@
       <div class="board-scroll"><table class="board">
         <thead><tr><th scope="col">Basket of ${basket.length === 5 ? "five" : basket.length}</th>${rounds.map((r, i) => `<th scope="col" class="${esc(r.status)}">${esc(i === 0 ? (r.label || "Baseline") : r.years)}<small>${esc(i === 0 ? r.years : (r.label || ""))}</small></th>`).join("")}${anyChange ? `<th scope="col" class="chg">Change since baseline</th>` : ""}</tr></thead>
         <tbody>${basket.map((mm, k) => `
-          <tr><th scope="row"><b>${esc(mm.plainName || mm.metric)}</b>${mm.tells ? `<span>${esc(mm.tells)}</span>` : ""}</th>
+          <tr${detail ? ` id="${esc(mm.id)}"` : ""}><th scope="row"><b>${esc(mm.plainName || mm.metric)}</b>${detail ? how(mm) : (mm.tells ? `<span>${esc(mm.tells)}</span>` : "")}</th>
             ${rounds.map((r, i) => boardCell(mm, r, i)).join("")}
             ${anyChange ? (changes[k] ? `<td class="chg"><div class="chg-in">${spark(changes[k])}<span class="delta"><b>${changes[k].pct > 0 ? "▲" : changes[k].pct < 0 ? "▼" : "■"} ${signed(changes[k].pct, Math.abs(changes[k].pct) < 10 ? 1 : 0)} %</b><small>to ${esc(changes[k].to.years)}</small></span></div></td>` : `<td class="chg muted">–</td>`) : ""}</tr>`).join("")}
         </tbody></table></div>
@@ -344,8 +351,9 @@
 
   /* ---------- measurements */
   const groups = [["core", "Core metrics: the basket"], ["context", "Context data"], ["design", "Study design"]];
+  const merged = basket.length && rounds.length;   // basket rows then live in the board above
   const mRows = groups.map(([g, label]) => {
-    const list = p.measurements.filter((x) => x.group === g);
+    const list = p.measurements.filter((x) => x.group === g && !(merged && g === "core"));
     if (!list.length) return "";
     return `<tr class="group-row"><td colspan="5">${label}</td></tr>` + list.map((x) => `
       <tr id="${esc(x.id)}">
@@ -363,10 +371,10 @@
     <div class="label">Measurements</div>
     <h2>What is measured</h2>
     ${basket.length && rounds.length ? `<h3 style="margin-top:0">Basket over time</h3>
-    <div class="basket-board in-record">${board()}</div>
+    <div class="basket-board in-record">${board(true)}</div>
     ${out.method ? `<p class="muted wide" style="font-size:13px;margin-top:14px">Headline indicator: ${esc(OUT[out.status] || out.status)}. ${esc(out.method)}</p>` : ""}
-    <h3>Methods</h3>` : ""}
-    <table class="reg"><thead><tr><th>Metric</th><th>Method</th><th>Provider</th><th>Frequency</th><th>Status</th></tr></thead><tbody>${mRows}</tbody></table>
+    ${mRows ? `<h3>Other measurements</h3>` : ""}` : ""}
+    ${mRows ? `<table class="reg"><thead><tr><th>Metric</th><th>Method</th><th>Provider</th><th>Frequency</th><th>Status</th></tr></thead><tbody>${mRows}</tbody></table>` : ""}
   </section>`;
 
   /* ---------- data */
@@ -436,20 +444,34 @@
     </div>
   </section>` : "";
 
-  /* ---------- organisations */
-  const organisations = `
-  <section class="block" id="organisations">
-    <div class="label">Organisations</div>
-    <h2>Who is involved</h2>
-    <div class="orgs">${p.organisations.map((o) => `
+  /* ---------- organisations. Grouped by what they do in the project: developers plus funders in the
+     order of the project file, everyone else by name. An organisation appears once, in its first group. */
+  const ids = (v) => (Array.isArray(v) ? v : v ? [v] : []);
+  const measuring = new Set([...(p.measurements || []), ...(p.datasets || [])].flatMap((x) => ids(x.provider)));
+  const byName = (a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" });
+  const placed = new Set();
+  const take = (list) => list.filter((o) => o && !placed.has(o.id) && placed.add(o.id));
+  const orgGroups = [
+    [developers.length > 1 ? "Project developers" : "Project developer", take(developers.map((i) => orgs[i]))],
+    [funders.length > 1 ? "Funders" : "Funder", take(funders.map((i) => orgs[i]))],
+    ["Measurement plus data", take(p.organisations.filter((o) => measuring.has(o.id)).sort(byName))],
+    ["Further partners", take(p.organisations.slice().sort(byName))],
+  ].filter(([, list]) => list.length);
+  const orgCard = (o) => `
       <div class="org${o.logo ? " has-logo" : ""}">
         ${o.logo ? `<img class="logo" src="${esc(o.logo)}" alt="${esc(o.name)} logo">` : ""}
-        <b>${esc(o.name)}${developers.includes(o.id) ? `<span class="structural">Project developer</span>` : ""}${funders.includes(o.id) ? `<span class="structural">Funder</span>` : ""}</b>
+        <b>${esc(o.name)}</b>
         <span>${esc(o.role)}</span>
         ${o.type ? `<span class="muted">${esc(o.type)}</span>` : ""}
         ${o.url ? `<a href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""))} ↗</a>` : ""}
         ${o.note ? `<span class="note muted">${esc(o.note)}</span>` : ""}
-      </div>`).join("")}</div>
+      </div>`;
+  const organisations = `
+  <section class="block" id="organisations">
+    <div class="label">Organisations</div>
+    <h2>Who is involved</h2>
+    ${orgGroups.map(([label, list], i) => `<h3${i ? "" : ` style="margin-top:0"`}>${label}</h3>
+    <div class="orgs">${list.map(orgCard).join("")}</div>`).join("")}
   </section>`;
 
   /* ---------- timeline. Interventions (work on the ground) are shown in the summary on a year axis,
