@@ -32,12 +32,27 @@ project repo (one per project)          this repo (nfa-register)
 | Password on the website | The site on GitHub opens with a password window; only the locked version is published (`tools/lock.py`). The password is the repository secret `REGISTER_PASSWORD` (Settings → Secrets and variables → Actions). To change it: update the secret, then Actions → "Collect projects" → Run workflow |
 | Preview on your PC | Double-click `preview-register.bat` next to the folders: rebuilds from your local files, opens the browser |
 | Share with the team (password) | Double-click `web-register.bat` next to the folders, upload the contents of `C:\NFA_data\4_projects\register\web` with FileZilla to demo.datascientist.ch, folder `register` → https://demo.datascientist.ch/register/ (same password as the NFA maps) |
-| Live monitoring block | `monitoring` in the project file: up to four key figures, charts (`bars`, `hbars`, `split`), sounds. Audio clips go in the project folder under `audio/`, referenced as `"src": "audio/<name>.mp3"` |
+| Monitoring streams | `monitoring` in the project file: key figures, charts (`bars`, `hbars`, `split`), sounds. Audio clips go in the project folder under `audio/`, referenced as `"src": "audio/<name>.mp3"`. Shown in the full record. Measured items without a `metric` link also appear in the summary under "Did you know?" |
+| Name developer plus funder | Add the organisation to `organisations`, then put its `id` in `developers` or `funding.funders`. Only do this once they agree to be named |
+| Funding amount | `funding.amount`: `value`, `currency`, `period`, `disclosure`. The value reaches the website only with `"disclosure": "public"` |
+| Enter a measured value | In `measurements`, find the metric (group `core` = basket), set `value` (project area) plus `reference` (reference areas) in `series` for the round (`t0`, `t1` ...). Leave `null` until measured |
+| Set the headline indicator | `outcome`: `status` (`improving`, `stable`, `declining`), `value`, `from`, `to`, `verified`. The page never computes it |
+| Add an intervention | One line in `timeline` with `"type": "intervention"`, a `date`, optional `by` (organisation ids). It appears in the summary under "On the ground" |
+| Reference areas on the map | Save the outlines as `geo/reference-areas.geojson` in the project folder (WGS84, optional `name` per feature), set `location.referenceAreas` to that path plus `referenceAreasStatus` |
 | Change the colours | Change the values in `:root` at the top of `assets/css/register.css`. Roles (labels, chips, map pin) are mapped right below the palette |
 
 The GitHub workflow collects every project file, checks it against `schema/nfa-project-0.1.schema.json`
 and publishes the site: on every push, every night, or with Actions → "Collect projects" → Run workflow.
 If a project file has errors, the log lists them and the last good version stays online.
+
+## Project page: two views
+
+- **Summary** (default): developer, funder, funding at the top; the basket of core metrics over the measurement rounds with the
+  headline indicator "Is biodiversity improving?"; photo plus map with project area plus reference areas; work on the ground
+  on a year axis; the project in brief; "Did you know?"; photos.
+- **Full record** (`project.html?id=<slug>&view=record`, or any link to a dataset, agreement, measurement): monitoring streams,
+  methods, datasets, agreements, documents, organisations, complete timeline, citation.
+- Both views read the same project file. Values in the basket stay empty until measured; nothing is estimated.
 
 ## Project IDs
 
@@ -49,6 +64,8 @@ If a project file has errors, the log lists them and the last good version stays
 
 - People appear only with `consent: true`. Keep names without consent out of the public project file entirely.
 - Partner logos appear only with `logoConfirmed: true`.
+- A funding amount not marked `public` is removed from the published file.
+- Developers, funders, timeline `by`: only ids listed in `organisations` are accepted.
 - Only datasets that are `public` and `available` with a DOI or URL go into the DCAT-AP CH catalogue.
 
 ## Work-in-progress phase (now)

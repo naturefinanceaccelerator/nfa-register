@@ -1,7 +1,7 @@
 {
  "register": "NFA Project Register",
  "schemaVersion": "0.1",
- "generated": "2026-11-15",
+ "generated": "2026-11-17",
  "totals": {
   "projects": 1,
   "hectares": 30,
@@ -38,6 +38,23 @@
     "Hedgerows",
     "Forest edge"
    ],
+   "developers": [],
+   "funders": [],
+   "fundingAmount": null,
+   "basket": [
+    "Habitat structure",
+    "Plants",
+    "Breeding birds",
+    "Amphibians",
+    "Earthworms"
+   ],
+   "outcome": {
+    "status": "not-yet-measurable",
+    "value": null,
+    "unit": "%",
+    "verified": false,
+    "firstReading": "2028"
+   },
    "image": "data/projects/mellingen/images/hero.jpg",
    "imageAlt": "Aerial view of the Mellingen site: farmland, forest and the Reuss",
    "counts": {
@@ -49,10 +66,10 @@
    },
    "disclosure": {
     "on-request": 11,
-    "public": 11,
-    "not-disclosed": 1
+    "not-disclosed": 1,
+    "public": 11
    },
-   "lastUpdated": "2026-11-11"
+   "lastUpdated": "2026-11-17"
   }
  ]
 }

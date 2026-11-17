@@ -2,7 +2,7 @@
 
 Reads registry/sources.json, fetches each project's nfa-project.json from its
 GitHub repository (or from a local folder next to this repository), checks it,
-copies its images, logos and boundary, then writes:
+copies its images, logos, boundary and reference areas, then writes:
 
   data/projects/<slug>.json     one file per project, as displayed
   data/projects/<slug>/...      copied images, logos, boundary
@@ -89,10 +89,32 @@ def check(p):
         for o in a.get("parties", []):
             if o not in org_ids:
                 errors.append(f"agreement '{a['id']}': unknown party '{o}'")
+    periods = {r.get("id") for r in p.get("schedule", [])}
     for m in p["measurements"]:
         for o in m.get("provider", []):
             if o not in org_ids:
                 errors.append(f"measurement '{m['id']}': unknown provider '{o}'")
+        for point in m.get("series", []):
+            if point.get("period") not in periods:
+                errors.append(f"measurement '{m['id']}': series period '{point.get('period')}' is not in schedule")
+    # who is behind the project: only organisations listed in the file can be named
+    for o in p.get("developers", []):
+        if o not in org_ids:
+            errors.append(f"developers: unknown organisation '{o}'")
+    funding = p.get("funding") or {}
+    for o in funding.get("funders", []):
+        if o not in org_ids:
+            errors.append(f"funding: unknown funder '{o}'")
+    amount = funding.get("amount")
+    if amount and amount.get("disclosure") not in DISCLOSURE:
+        errors.append(f"funding amount has disclosure '{amount.get('disclosure')}'")
+    for t in p.get("timeline", []):
+        for o in t.get("by", []):
+            if o not in org_ids:
+                errors.append(f"timeline '{t.get('event')}': unknown organisation '{o}'")
+    out = p.get("outcome") or {}
+    if out.get("status") not in (None, "not-yet-measurable") and out.get("value") is None:
+        errors.append("outcome: a status other than 'not-yet-measurable' needs a value")
     try:  # full schema check when jsonschema is installed (it is in the GitHub workflow)
         import jsonschema
         schema = json.loads((ROOT / "schema" / "nfa-project-0.1.schema.json").read_text(encoding="utf-8"))
@@ -144,6 +166,16 @@ def prepare(p, src, origin):
         except FileNotFoundError:
             log(f"  boundary file missing, shown as pending")
             loc["boundary"], loc["boundaryStatus"] = None, "pending"
+    if loc.get("referenceAreas"):
+        try:
+            loc["referenceAreas"] = copy_asset(src, slug, loc["referenceAreas"])
+        except FileNotFoundError:
+            log(f"  reference areas file missing, shown as pending")
+            loc["referenceAreas"], loc["referenceAreasStatus"] = None, "pending"
+    # the funding amount leaves the public file unless it is marked public
+    amount = (p.get("funding") or {}).get("amount")
+    if amount and amount.get("disclosure") != "public":
+        amount["value"] = None
     # people without consent are removed before publication
     p["people"] = [x for x in p.get("people", []) if x.get("consent")]
     shown = {x["name"] for x in p["people"]}
@@ -152,7 +184,7 @@ def prepare(p, src, origin):
             d["creators"] = [c for c in d["creators"] if c in shown]
     # remove files no longer used; files are overwritten in place (OneDrive locks folders)
     kept = {(ROOT / x).resolve() for x in [i.get("src") for i in p.get("images", [])] +
-            [o.get("logo") for o in p["organisations"]] + [loc.get("boundary")] +
+            [o.get("logo") for o in p["organisations"]] + [loc.get("boundary"), loc.get("referenceAreas")] +
             [x.get("src") for x in (p.get("monitoring") or {}).get("sounds", [])] if x and not x.startswith("http")}
     for f in before:
         if f.resolve() not in kept:
@@ -182,6 +214,12 @@ def share(p):
 
 def summary(p):
     hero = (p.get("images") or [{}])[0]
+    org = {o["id"]: o["name"] for o in p["organisations"]}
+    funding = p.get("funding") or {}
+    amount = funding.get("amount") or {}
+    rounds = p.get("schedule", [])
+    first_repeat = rounds[1]["years"] if len(rounds) > 1 else None
+    outcome = p.get("outcome") or {}
     return {
         "id": p["id"], "slug": p["slug"], "name": p["name"], "tagline": p.get("tagline"),
         "stage": p["stage"], "summary": p["summary"],
@@ -189,6 +227,12 @@ def summary(p):
         "point": p["location"]["point"], "areaHa": p["location"].get("areaHa"),
         "areaPrecision": p["location"].get("areaPrecision"),
         "ecosystem": p.get("ecosystem", []),
+        "developers": [org[o] for o in p.get("developers", [])],
+        "funders": [org[o] for o in funding.get("funders", [])],
+        "fundingAmount": {"value": amount.get("value"), "currency": amount.get("currency")} if amount.get("disclosure") == "public" and amount.get("value") is not None else None,
+        "basket": [m.get("plainName") or m["metric"] for m in p["measurements"] if m.get("group") == "core"],
+        "outcome": {"status": outcome.get("status", "not-yet-measurable"), "value": outcome.get("value"), "unit": outcome.get("unit"),
+                    "verified": bool(outcome.get("verified")), "firstReading": first_repeat},
         "image": hero.get("src"), "imageAlt": hero.get("alt"),
         "counts": {
             "measurements": len(p["measurements"]),

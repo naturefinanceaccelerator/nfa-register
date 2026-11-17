@@ -1,4 +1,9 @@
-/* Project page: renders data/projects/<slug>.json */
+/* Project page: renders data/projects/<slug>.json
+   Two views of the same record:
+     Summary      for funders, project developers, policy makers: who is behind the project, the basket
+                  of core metrics over time, the headline indicator, what was done on the ground, nice-to-knows.
+     Full record  for scientists plus reviewers: methods, monitoring streams, datasets, agreements,
+                  documents, organisations, the complete timeline. */
 (async () => {
   const { esc, getJSON, chip, access, licence, area, fmtDate, STAGES, STATUS, CANTONS, makeMap, pin, CONTACT } = NFA;
   const main = document.getElementById("main");
@@ -23,6 +28,109 @@
   const year = (p.dates.registered || "").slice(0, 4);
   const citation = `Nature Finance Accelerator (${year}). ${p.name} (${p.id}). NFA Project Register. ${pageUrl} (accessed ${today}).`;
 
+  /* ---------- small helpers */
+  const nf = (n, dec = 0) => Number(n).toLocaleString("en-GB", { minimumFractionDigits: dec, maximumFractionDigits: dec });
+  const num = (v) => nf(v, Number.isInteger(v) ? 0 : Math.abs(v) < 10 ? 2 : 1);
+  const signed = (v, dec = 0) => `${v > 0 ? "+" : v < 0 ? "−" : "±"}${nf(Math.abs(v), dec)}`;
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const when = (d) => { const m = /^(\d{4})-(\d{2})$/.exec(d || ""); return m ? `${MONTHS[+m[2] - 1]} ${m[1]}` : /^\d{4}-\d{2}-\d{2}$/.test(d || "") ? fmtDate(d) : (d || "").replace("-Q", " Q"); };
+  const yearsOf = (s) => (String(s || "").match(/\d{4}/g) || []).map(Number);
+
+  /* ---------- who is behind the project: developer, funder, funding amount */
+  const developers = p.developers || [];
+  const funding = p.funding || {};
+  const funders = funding.funders || [];
+  const orgList = (ids, note) => (ids.length ? ids.map((i) => esc(orgs[i]?.name || i)).join(", ") : `<span class="muted">${esc(note || "Name follows")}</span>`);
+  function amount(a) {
+    if (!a) return ["–", ""];
+    if (a.disclosure === "public" && a.value != null) return [`${esc(a.currency || "CHF")} ${nf(a.value)}`, a.period || ""];
+    if (a.disclosure === "on-request") return ["On request", p.contact || CONTACT];
+    return ["Not disclosed", a.reason || ""];
+  }
+  const [amountText, amountNote] = amount(funding.amount);
+
+  /* ---------- measurement rounds plus the basket of core metrics */
+  const rounds = p.schedule || [];
+  const basket = p.measurements.filter((x) => x.group === "core");
+  const point = (mm, r) => (mm.series || []).find((x) => x.period === r.id) || {};
+  const firstRepeat = rounds[1] ? rounds[1].years : null;
+
+  /** Change of one metric: first round (baseline) against the latest round with a value. */
+  function change(mm) {
+    const v = rounds.map((r) => point(mm, r).value ?? null);
+    if (v[0] == null || v[0] === 0) return null;
+    let j = -1;
+    v.forEach((x, i) => { if (i > 0 && x != null) j = i; });
+    return j < 0 ? null : { pct: ((v[j] - v[0]) / Math.abs(v[0])) * 100, to: rounds[j], values: v, ref: rounds.map((r) => point(mm, r).reference ?? null) };
+  }
+
+  function spark(c) {
+    const W = 96, H = 28, pad = 3;
+    const all = [...c.values, ...c.ref].filter((x) => x != null), lo = Math.min(...all), hi = Math.max(...all), span = hi - lo || 1;
+    const xy = (v, i) => `${(pad + (i * (W - 2 * pad)) / Math.max(1, rounds.length - 1)).toFixed(1)},${(H - pad - ((v - lo) / span) * (H - 2 * pad)).toFixed(1)}`;
+    const line = (arr) => arr.map((v, i) => (v == null ? null : xy(v, i))).filter(Boolean).join(" ");
+    const last = c.values.reduce((a, v, i) => (v != null ? i : a), 0);
+    return `<svg class="spark" viewBox="0 0 ${W} ${H}" aria-hidden="true">${c.ref.some((x) => x != null) ? `<polyline class="ref" points="${line(c.ref)}"/>` : ""}<polyline points="${line(c.values)}"/><circle cx="${xy(c.values[last], last).split(",")[0]}" cy="${xy(c.values[last], last).split(",")[1]}" r="2.6"/></svg>`;
+  }
+
+  const CELL = { planned: "Planned", "in-progress": "Under way", available: "Measured", missing: "No value" };
+  const cellState = (mm, r, i) => {
+    const pt = point(mm, r);
+    if (pt.value != null) return "available";
+    if (pt.status) return pt.status;
+    if (r.status === "done") return "missing";
+    if (r.status === "in-progress") return i > 0 || mm.status === "in-progress" ? "in-progress" : "planned";
+    return "planned";
+  };
+  function boardCell(mm, r, i) {
+    const pt = point(mm, r);
+    if (pt.value != null) {
+      return `<td class="has"><b>${num(pt.value)}</b>${mm.unit ? `<span class="u">${esc(mm.unit)}</span>` : ""}${pt.reference != null ? `<small>Reference ${num(pt.reference)}</small>` : ""}</td>`;
+    }
+    const st = cellState(mm, r, i);
+    return `<td><span class="mark ${esc(st)}" title="${esc(CELL[st])}"></span><span class="sr">${esc(CELL[st])}</span></td>`;
+  }
+
+  /** The basket board: one row per core metric, one column per measurement round. */
+  function board() {
+    if (!basket.length || !rounds.length) return "";
+    const changes = basket.map(change), anyChange = changes.some(Boolean), anyRef = basket.some((mm) => (mm.series || []).some((x) => x.reference != null));
+    const used = new Set();
+    basket.forEach((mm) => rounds.forEach((r, i) => used.add(cellState(mm, r, i))));
+    return `
+      <div class="board-scroll"><table class="board">
+        <thead><tr><th scope="col">Basket of ${basket.length === 5 ? "five" : basket.length}</th>${rounds.map((r, i) => `<th scope="col" class="${esc(r.status)}">${esc(i === 0 ? (r.label || "Baseline") : r.years)}<small>${esc(i === 0 ? r.years : (r.label || ""))}</small></th>`).join("")}${anyChange ? `<th scope="col" class="chg">Change since baseline</th>` : ""}</tr></thead>
+        <tbody>${basket.map((mm, k) => `
+          <tr><th scope="row"><b>${esc(mm.plainName || mm.metric)}</b>${mm.tells ? `<span>${esc(mm.tells)}</span>` : ""}</th>
+            ${rounds.map((r, i) => boardCell(mm, r, i)).join("")}
+            ${anyChange ? (changes[k] ? `<td class="chg"><div class="chg-in">${spark(changes[k])}<span class="delta"><b>${changes[k].pct > 0 ? "▲" : changes[k].pct < 0 ? "▼" : "■"} ${signed(changes[k].pct, Math.abs(changes[k].pct) < 10 ? 1 : 0)} %</b><small>to ${esc(changes[k].to.years)}</small></span></div></td>` : `<td class="chg muted">–</td>`) : ""}</tr>`).join("")}
+        </tbody></table></div>
+      <p class="board-key">${[["available", "Measured"], ["in-progress", "Under way"], ["planned", "Planned"], ["missing", "No value"]].filter(([k]) => used.has(k) && k !== "available").map(([k, t]) => `<span><i class="mark ${k}"></i>${t}</span>`).join("")}${anyRef ? `<span><i class="key-ref"></i>Reference areas</span>` : ""}${!anyChange && firstRepeat ? `<span class="muted">First comparison against the baseline: ${esc(firstRepeat)}</span>` : ""}</p>`;
+  }
+
+  /* ---------- the headline indicator. Set in the project file by NFA; the page never computes it. */
+  const OUT = { "not-yet-measurable": "Not yet measurable", improving: "Improving", stable: "Stable", declining: "Declining" };
+  const out = p.outcome || { status: "not-yet-measurable" };
+  const roundById = (id) => rounds.find((r) => r.id === id);
+  function indicator() {
+    const has = out.status !== "not-yet-measurable" && out.value != null;
+    const span = has && roundById(out.from) && roundById(out.to) ? `${roundById(out.from).years} to ${roundById(out.to).years}` : "";
+    return `
+      <div class="ind ${esc(out.status)}">
+        <div class="label light">Is biodiversity improving?</div>
+        ${has ? `<div class="ind-fig"><b><i aria-hidden="true">${out.status === "improving" ? "▲" : out.status === "declining" ? "▼" : "■"}</i>${signed(out.value, Math.abs(out.value) < 10 ? 1 : 0)} ${esc(out.unit || "%")}</b></div>
+        <div class="ind-status">${esc(OUT[out.status])}${span ? `<span>${esc(span)}</span>` : ""}</div>
+        <span class="ind-tag">${out.verified ? "Independently reviewed" : "Not yet reviewed"}</span>` : `<div class="ind-status big">${esc(OUT[out.status] || out.status)}</div>`}
+        ${out.note ? `<p>${esc(out.note)}</p>` : ""}
+        ${out.method ? `<small><span>How it is read</span>${esc(out.method)}</small>` : ""}
+      </div>`;
+  }
+
+  const basketBand = basket.length && rounds.length ? `
+  <section class="basket only-summary" id="basket" aria-label="Basket of core metrics over time">
+    <div class="wrap"><div class="basket-grid">${indicator()}<div class="basket-board">${board()}</div></div></div>
+  </section>` : "";
+
   /* ---------- header */
   const head = `
   <div class="wrap p-head">
@@ -31,26 +139,42 @@
     ${p.tagline ? `<p class="tag">${esc(p.tagline)}</p>` : ""}
     <div class="chips">${chip("stage", STAGES[p.stage] || p.stage)}${NFA.WIP ? `<span class="chip pending" title="${esc(NFA.WIP_TEXT)}">Work in progress</span>` : ""}${p.stageNote ? `<span class="muted" style="font-size:13px">${esc(p.stageNote)}</span>` : ""}</div>
     <dl class="facts">
-      <div><dt>${(loc.cantons || []).length > 1 ? "Cantons" : "Canton"}</dt><dd>${esc((loc.cantons || []).map((c) => CANTONS[c] || c).join(", ") || "–")}<small>${esc(loc.municipality || "")}</small></dd></div>
+      <div><dt>Project developer</dt><dd>${orgList(developers, p.developersNote)}</dd></div>
+      <div><dt>${funders.length > 1 ? "Funders" : "Funder"}</dt><dd>${orgList(funders, funding.fundersNote)}</dd></div>
+      <div><dt>Funding</dt><dd>${esc(amountText)}<small>${esc(amountNote)}</small></dd></div>
+      <div><dt>Location</dt><dd>${esc(loc.municipality || "–")}<small>${esc((loc.cantons || []).map((c) => CANTONS[c] || c).join(", "))}</small></dd></div>
       <div><dt>Area</dt><dd>${esc(area(p))}<small>${loc.areaPrecision === "approximate" ? "approximate" : "from boundary"}</small></dd></div>
-      <div><dt>Ecosystem</dt><dd>${esc((p.ecosystem || []).slice(0, 2).join(", ") || "–")}<small>${esc((p.ecosystem || []).slice(2).join(", "))}</small></dd></div>
-      <div><dt>Baseline (t0)</dt><dd>${esc(p.dates.baselineT0 ? fmtDate(p.dates.baselineT0) : "Pending")}<small>${esc(p.dates.baselineT0Note || "")}</small></dd></div>
-      <div><dt>Registered</dt><dd>${esc(fmtDate(p.dates.registered))}</dd></div>
-      <div><dt>Last updated</dt><dd>${esc(fmtDate(p.dates.lastUpdated))}</dd></div>
+      <div><dt>Baseline</dt><dd>${esc(rounds[0] ? rounds[0].years : p.dates.baselineT0 ? fmtDate(p.dates.baselineT0) : "Pending")}<small>${esc(rounds[0] ? (rounds[0].status === "done" ? "complete" : rounds[0].status === "in-progress" ? "under way" : "planned") : (p.dates.baselineT0Note || ""))}</small></dd></div>
     </dl>
+    <div class="views">
+      <div class="view-switch" role="tablist" aria-label="View of this record">
+        <button type="button" role="tab" data-view="summary"><b>Summary</b><span>Funders, developers, policy</span></button>
+        <button type="button" role="tab" data-view="record"><b>Full record</b><span>Scientists, reviewers</span></button>
+      </div>
+      <span class="muted">Registered ${esc(fmtDate(p.dates.registered))} · updated ${esc(fmtDate(p.dates.lastUpdated))}</span>
+    </div>
+  </div>`;
+
+  /* ---------- photo plus map (both views). The map shows the project area plus the reference areas. */
+  const visual = `
+  <div class="wrap">
     <div class="visual">
-      ${hero ? `<figure><img src="${esc(hero.src)}" alt="${esc(hero.alt)}"><figcaption>${esc(hero.credit ? "Photo: " + hero.credit : "")}</figcaption></figure>` : `<figure><div class="ph" style="height:420px;border-radius:8px;background:var(--sage-tint)"></div></figure>`}
-      <div class="map-box"><div class="map" id="pmap" role="region" aria-label="Project location"></div>
-        <figcaption style="font-size:12px;color:var(--grey-500);margin-top:8px">${esc(loc.boundary ? "Project boundary (" + (loc.boundaryStatus || "") + ")" : (loc.boundaryNote || "Boundary pending"))}</figcaption></div>
+      ${hero ? `<figure><img src="${esc(hero.src)}" alt="${esc(hero.alt)}"><figcaption>${esc(hero.credit ? "Photo: " + hero.credit : "")}</figcaption></figure>` : `<figure><div class="ph" style="height:420px;border-radius:8px;background:var(--blush)"></div></figure>`}
+      <div class="map-box"><div class="map" id="pmap" role="region" aria-label="Project area plus reference areas"></div>
+        <ul class="map-legend" id="legend">
+          <li>${loc.boundary ? `<i class="lg area"></i>Project area${loc.boundaryStatus && loc.boundaryStatus !== "surveyed" ? ` (${esc(loc.boundaryStatus)})` : ""}` : `<i class="lg site"></i>Project site, ${esc(loc.pointPrecision || "approximate")} level <span class="muted">· boundary follows</span>`}</li>
+          <li id="legendRef">${loc.referenceAreas ? `<i class="lg ref"></i>Reference areas${loc.referenceAreasStatus && loc.referenceAreasStatus !== "surveyed" ? ` (${esc(loc.referenceAreasStatus)})` : ""}` : `<i class="lg ref off"></i><span class="muted">Reference areas: ${esc(loc.referenceAreasNote ? "outlines follow" : "not on the map yet")}</span>`}</li>
+        </ul>
+      </div>
     </div>
   </div>`;
 
 
-  /* ---------- live monitoring: key figures, charts plus sounds right below the photo plus map.
-     Sources marked "example" show placeholder figures with an Example data tag until the partner delivers. */
+  /* ---------- monitoring streams: key figures, charts plus sounds.
+     Full record: everything, sources marked "example" carry an Example data tag until the partner delivers.
+     Summary: only measured items that belong to no basket metric, under "Did you know?". */
   const mon = p.monitoring;
   const RED = { CR: "Critically endangered", EN: "Endangered", VU: "Vulnerable", NT: "Near threatened", LC: "Least concern" };
-  const nf = (n, dec = 0) => Number(n).toLocaleString("en-GB", { minimumFractionDigits: dec, maximumFractionDigits: dec });
   const short = (s) => fmtDate((s || "").slice(0, 10)).replace(/ \d{4}$/, "");
   const srcOf = (id) => (mon && (mon.sources || []).find((x) => x.id === id)) || null;
   const isEx = (id) => srcOf(id)?.status === "example";
@@ -97,12 +221,11 @@
     return `<button type="button" class="play" data-src="${esc(x.src || "")}" ${x.src ? "" : "disabled"} aria-label="${x.src ? "Play" : "No clip yet for"} ${esc(x.species)}" title="${x.src ? "Play the recording" : "Clip follows"}"><svg viewBox="0 0 16 16" aria-hidden="true"><path class="i-play" d="M5 3.5v9l7.5-4.5z"/><path class="i-pause" d="M4.5 3.5h2.6v9H4.5zM8.9 3.5h2.6v9H8.9z"/></svg></button>`;
   }
 
-  function liveBlock(m) {
-    const charts = m.charts || [];
-    const band = charts.find((c) => c.type === "split" && !isEx(c.source));
-    const cards = charts.filter((c) => c !== band);
+  const drawChart = (c) => (c.type === "bars" ? barsChart(c) : c.type === "hbars" ? hbarsChart(c) : splitChart(c, false));
+
+  function soundsCard(m) {
     const sounds = (m.sounds || []).slice().sort((a, b) => (b.lastHeard || "").localeCompare(a.lastHeard || ""));
-    const soundCard = sounds.length ? `
+    return sounds.length ? `
         <figure class="live-card sounds">
           <figcaption><b>Heard at ${esc(loc.municipality || p.name)}</b><span>Red List birds, last heard first</span><span class="src">${srcLine("acoustics")}</span></figcaption>
           <ul class="sound-list">${sounds.map((x) => `
@@ -114,15 +237,22 @@
             </li>`).join("")}</ul>
           ${sounds.some((x) => !x.src) ? `<small class="muted">Grey buttons: recording follows.</small>` : ""}
         </figure>` : "";
+  }
+
+  function liveBlock(m) {
+    const charts = m.charts || [];
+    const band = charts.find((c) => c.type === "split" && !isEx(c.source));
+    const cards = charts.filter((c) => c !== band);
+    const soundCard = soundsCard(m);
     const order = [];
-    cards.forEach((c, i) => { order.push(chartBox(c, c.type === "bars" ? barsChart(c) : c.type === "hbars" ? hbarsChart(c) : splitChart(c, false))); if (i === 1 && soundCard) order.push(soundCard); });
+    cards.forEach((c, i) => { order.push(chartBox(c, drawChart(c))); if (i === 1 && soundCard) order.push(soundCard); });
     if (cards.length < 2 && soundCard) order.push(soundCard);
     return `
-  <section class="live" id="live" aria-label="${esc(m.title || "Live from the site")}">
+  <section class="live only-record" id="live" aria-label="${esc(m.title || "Monitoring streams")}">
     <div class="wrap">
       <div class="live-band">
         <div class="live-top">
-          <div class="label light"><span class="pulse" aria-hidden="true"></span>${esc(m.title || "Live from the site")}</div>
+          <div class="label light"><span class="pulse" aria-hidden="true"></span>${esc(m.title || "Monitoring streams")}</div>
           <div class="streams">${(m.sources || []).map((x) => `<span class="stream ${esc(x.status)}"><i></i>${esc(x.label || x.id)} · ${esc(orgs[x.provider]?.name || x.provider)}${x.status === "example" ? " · example" : ""}</span>`).join("")}</div>
         </div>
         <div class="kpis">${(m.kpis || []).map((k) => `
@@ -136,18 +266,38 @@
   }
   const live = mon ? liveBlock(mon) : "";
 
+  /** Summary: measured, nice to know, not part of the basket. */
+  function didYouKnow(m) {
+    const nice = (x) => !x.metric && !isEx(x.source);
+    const facts = (m.kpis || []).filter(nice), charts = (m.charts || []).filter(nice);
+    const strip = charts.find((c) => c.type === "split"), cards = charts.filter((c) => c !== strip), soundCard = soundsCard(m);
+    if (!facts.length && !charts.length && !soundCard) return "";
+    return `
+  <section class="dyk only-summary" id="didyouknow">
+    <div class="wrap">
+      <div class="opener"><div class="label">Did you know?</div>
+        <h2>Heard on the site</h2>
+        <p>${esc(m.didYouKnow || "Good to know. These figures are not part of the basket.")}</p></div>
+      ${facts.length ? `<div class="dyk-facts">${facts.map((k) => `<div><b>${esc(k.value)}</b><span>${esc(k.label)}</span>${k.note ? `<small>${esc(k.note)}</small>` : ""}</div>`).join("")}</div>` : ""}
+      ${strip ? `<div class="dyk-strip"><span>${esc(strip.title || "")}</span>${splitChart(strip, false)}</div>` : ""}
+      <div class="live-grid">${cards.map((c) => chartBox(c, drawChart(c))).join("")}${soundCard}</div>
+      <p class="live-note">${esc(m.method || "")}${m.method ? ". " : ""}${m.retrieved ? `Figures retrieved ${esc(fmtDate(m.retrieved))}. ` : ""}<a href="#live">All monitoring streams in the full record →</a></p>
+    </div>
+  </section>`;
+  }
+  const dyk = mon ? didYouKnow(mon) : "";
+
   /* ---------- tabs */
   const images = p.images || [];
   const sections = [
     ["overview", "Overview"],
-    ...(images.length > 1 ? [["images", "Images", images.length]] : []),
     ["measurements", "Measurements", p.measurements.length],
     ["data", "Data", p.datasets.length],
     ["agreements", "Agreements, documents", p.agreements.length + docs.length],
     ["organisations", "Organisations", p.organisations.length],
     ["timeline", "Timeline"]
   ];
-  const tabs = `<div class="tabs"><div class="wrap">${sections.map(([id, t, n]) => `<a href="#${id}">${t}${n != null ? `<sup>${n}</sup>` : ""}</a>`).join("")}</div></div>`;
+  const tabs = `<div class="tabs only-record"><div class="wrap">${sections.map(([id, t, n]) => `<a href="#${id}">${t}${n != null ? `<sup>${n}</sup>` : ""}</a>`).join("")}</div></div>`;
 
   /* ---------- overview */
   const m = p.method || {};
@@ -163,18 +313,23 @@
       ${m.design ? `<dt>Design</dt><dd>${esc(m.design)}</dd>` : ""}
       ${m.review ? `<dt>Review</dt><dd>${esc(m.review)}</dd>` : ""}
       ${p.landUse ? `<dt>Land use</dt><dd>${esc(p.landUse)}</dd>` : ""}
+      ${(p.ecosystem || []).length ? `<dt>Ecosystem</dt><dd>${esc(p.ecosystem.join(", "))}</dd>` : ""}
+      <dt>Project developer</dt><dd>${orgList(developers, p.developersNote)}</dd>
+      <dt>${funders.length > 1 ? "Funders" : "Funder"}</dt><dd>${orgList(funders, funding.fundersNote)}</dd>
+      <dt>Funding</dt><dd>${esc(amountText)}${amountNote ? ` <span class="muted">· ${esc(amountNote)}</span>` : ""}</dd>
       <dt>Location</dt><dd>${esc(NFA.places(loc.cantons, loc.municipality))} · ${loc.point[1].toFixed(3)}° N, ${loc.point[0].toFixed(3)}° E <span class="muted">(${esc(loc.pointPrecision || "")} level)</span></dd>
     </dl>
   </section>`;
 
   /* ---------- measurements */
-  const groups = [["core", "Core metrics"], ["context", "Context data"], ["design", "Study design"]];
+  const groups = [["core", "Core metrics: the basket"], ["context", "Context data"], ["design", "Study design"]];
   const mRows = groups.map(([g, label]) => {
     const list = p.measurements.filter((x) => x.group === g);
     if (!list.length) return "";
     return `<tr class="group-row"><td colspan="5">${label}</td></tr>` + list.map((x) => `
       <tr id="${esc(x.id)}">
         <td data-h="Metric"><b>${esc(x.metric)}${x.structural ? `<span class="structural">structural</span>` : ""}</b>
+          ${x.indicator ? `<span class="sub">${esc(x.indicator)}${x.unit ? `, ${esc(x.unit)}` : ""}</span>` : ""}
           ${(x.datasets || []).length ? `<span class="sub">Data: ${x.datasets.map((d) => `<a href="#${esc(d)}">${esc((p.datasets.find((y) => y.id === d) || {}).title || d)}</a>`).join(", ")}</span>` : ""}</td>
         <td data-h="Method">${esc(x.method || "")}</td>
         <td data-h="Provider">${names(x.provider, x.providerNote)}</td>
@@ -186,6 +341,10 @@
   <section class="block" id="measurements">
     <div class="label">Measurements</div>
     <h2>What is measured</h2>
+    ${basket.length && rounds.length ? `<h3 style="margin-top:0">Basket over time</h3>
+    <div class="basket-board in-record">${board()}</div>
+    ${out.method ? `<p class="muted" style="font-size:13px;margin-top:14px">Headline indicator: ${esc(OUT[out.status] || out.status)}. ${esc(out.method)}</p>` : ""}
+    <h3>Methods</h3>` : ""}
     <table class="reg"><thead><tr><th>Metric</th><th>Method</th><th>Provider</th><th>Frequency</th><th>Status</th></tr></thead><tbody>${mRows}</tbody></table>
   </section>`;
 
@@ -255,7 +414,7 @@
 
   /* ---------- images (shown once a project has more than the header photo) */
   const gallery = images.length > 1 ? `
-  <section class="photos" id="images">
+  <section class="photos only-summary" id="images">
     <div class="wrap">
     <div class="photos-head"><h2>From the site</h2><span class="muted">${esc([images[1].date ? fmtDate(images[1].date) : "", images[1].credit ? "Photos: " + images[1].credit : ""].filter(Boolean).join(" · "))}</span></div>
     <div class="photo-strip">${images.slice(1).map((i) => `
@@ -274,7 +433,7 @@
     <div class="orgs">${p.organisations.map((o) => `
       <div class="org${o.logo ? " has-logo" : ""}">
         ${o.logo ? `<img class="logo" src="${esc(o.logo)}" alt="${esc(o.name)} logo">` : ""}
-        <b>${esc(o.name)}</b>
+        <b>${esc(o.name)}${developers.includes(o.id) ? `<span class="structural">Project developer</span>` : ""}${funders.includes(o.id) ? `<span class="structural">Funder</span>` : ""}</b>
         <span>${esc(o.role)}</span>
         ${o.type ? `<span class="muted">${esc(o.type)}</span>` : ""}
         ${o.url ? `<a href="${esc(o.url)}" target="_blank" rel="noopener">${esc(o.url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""))} ↗</a>` : ""}
@@ -282,13 +441,72 @@
       </div>`).join("")}</div>
   </section>`;
 
-  /* ---------- timeline */
+  /* ---------- timeline. Interventions (work on the ground) are shown in the summary on a year axis,
+     next to the measurement rounds. The full record lists every step. */
+  const TYPES = { intervention: "On the ground", measurement: "Measurement", data: "Data", review: "Review", record: "Register" };
+  const steps = p.timeline || [];
+  const interventions = steps.filter((t) => t.type === "intervention");
   const timeline = `
   <section class="block" id="timeline">
     <div class="label">Timeline</div>
     <h2>Milestones</h2>
-    <ol class="timeline">${(p.timeline || []).map((t) => `<li class="${esc(t.status)}"><div class="d">${esc(t.date)}${t.status === "ongoing" ? " · ongoing" : ""}</div><div class="e">${esc(t.event)}</div></li>`).join("")}</ol>
+    <ol class="timeline">${steps.map((t) => `<li class="${esc(t.status)}"><div class="d">${esc(when(t.date))}${t.status === "ongoing" ? " · ongoing" : ""}${t.type ? `<span class="ty ${esc(t.type)}">${esc(TYPES[t.type] || t.type)}</span>` : ""}</div><div class="e">${esc(t.event)}${(t.by || []).length ? `<span class="by">${names(t.by)}</span>` : ""}</div></li>`).join("")}</ol>
     ${(p.changelog || []).length ? `<h3>Changes to this record</h3><ul style="padding-left:18px;margin:0;color:var(--grey-700);font-size:14px">${p.changelog.map((c) => `<li><span class="mono">${esc(c.date)}</span> ${esc(c.change)}</li>`).join("")}</ul>` : ""}
+  </section>`;
+
+  function ground() {
+    const ys = [...interventions.flatMap((t) => yearsOf(t.date)), ...rounds.flatMap((r) => yearsOf(r.years))];
+    if (!ys.length) return "";
+    const y0 = Math.min(...ys), y1 = Math.max(...ys), years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i), now = new Date().getFullYear();
+    const col = (y) => y - y0 + 2;
+    return `
+  <section class="ground only-summary" id="ground">
+    <div class="wrap">
+      <div class="opener"><div class="label">On the ground</div>
+        <h2>What has been done, when</h2>
+        <p>Work on the site, set against the measurement rounds. A change in the basket can then be read next to what was done before it.</p></div>
+      <div class="years-scroll"><div class="years" style="--n:${years.length}">
+        <span class="yk" style="grid-row:1"></span>${years.map((y) => `<span class="yh${y === now ? " now" : ""}" style="grid-column:${col(y)}">${y}</span>`).join("")}
+        <span class="yk" style="grid-row:2">On the ground</span>
+        ${years.map((y) => `<div class="yc" style="grid-column:${col(y)}">${interventions.filter((t) => yearsOf(t.date)[0] === y).map((t) => `<div class="iv ${esc(t.status)}"><b>${esc(t.event)}</b><span>${esc(when(t.date))}${t.status === "ongoing" ? " · ongoing" : t.status === "planned" ? " · planned" : ""}${(t.by || []).length ? ` · ${names(t.by)}` : ""}</span></div>`).join("")}</div>`).join("")}
+        <span class="yk" style="grid-row:3">Measured</span>
+        ${rounds.map((r, i) => { const y = yearsOf(r.years); return y.length ? `<div class="rd ${esc(r.status)}" style="grid-column:${col(y[0])} / span ${y[y.length - 1] - y[0] + 1}"><b>${esc(i === 0 ? (r.label || "Baseline") : (r.label || r.id))}</b><span>${esc(r.status === "done" ? "done" : r.status === "in-progress" ? "under way" : "planned")}</span></div>` : ""; }).join("")}
+      </div></div>
+      <p class="live-note">${interventions.length ? "" : "No work on the ground is recorded yet. "}<a href="#timeline">Every measurement, data plus review step in the full record →</a></p>
+    </div>
+  </section>`;
+  }
+
+  /* ---------- summary: about the project, who is behind it */
+  const m0 = p.method || {};
+  const about = `
+  <section class="about only-summary" id="about">
+    <div class="wrap">
+      <div class="opener"><div class="label">The project</div><h2>In brief</h2></div>
+      <div class="about-grid">
+        <div><p class="lead">${esc(p.summary)}</p>${(p.description || []).slice(0, 1).map((d) => `<p>${esc(d)}</p>`).join("")}</div>
+        <dl class="kv">
+          ${(p.ecosystem || []).length ? `<dt>Ecosystem</dt><dd>${esc(p.ecosystem.join(", "))}</dd>` : ""}
+          ${p.landUse ? `<dt>Land use</dt><dd>${esc(p.landUse)}</dd>` : ""}
+          ${m0.design ? `<dt>How change is read</dt><dd>${esc(m0.design)}</dd>` : ""}
+          ${m0.review ? `<dt>Independent review</dt><dd>${esc(m0.review)}</dd>` : ""}
+          <dt>Partners</dt><dd>${p.organisations.length} organisations · <a href="#organisations">see all</a></dd>
+        </dl>
+      </div>
+    </div>
+  </section>`;
+
+  const openness = { public: 0, "on-request": 0, "not-disclosed": 0 };
+  [...p.datasets, ...p.agreements, ...docs].forEach((i) => { openness[i.disclosure] = (openness[i.disclosure] || 0) + 1; });
+  const toRecord = `
+  <section class="to-record only-summary">
+    <div class="wrap"><div class="to-record-box">
+      <div><div class="label">For scientists, reviewers</div>
+        <h2>The full record</h2>
+        <p>${p.measurements.length} measurements with their methods, ${p.datasets.length} datasets, ${p.agreements.length} agreements, ${docs.length} documents, the complete timeline.</p>
+        ${NFA.opennessBar(openness)}</div>
+      <button type="button" class="btn dark" data-view="record">Open the full record →</button>
+    </div></div>
   </section>`;
 
   /* ---------- sidebar */
@@ -302,6 +520,8 @@
       <ul>
         <li><span class="mono">${esc(p.id)}</span></li>
         <li>Schema v${esc(p.schemaVersion)}</li>
+        <li class="muted">Registered ${esc(fmtDate(p.dates.registered))}</li>
+        <li class="muted">Updated ${esc(fmtDate(p.dates.lastUpdated))}</li>
         ${src.collected ? `<li class="muted">Collected ${esc(src.collected.replace("T", " "))}</li>` : ""}
       </ul>
       <a class="btn dark" href="data/projects/${esc(p.slug)}.json" download>Project file (JSON)</a><br>
@@ -321,27 +541,79 @@
     <section><h4>Licence</h4><span>Record ${licence(p.licence || "CC-BY-4.0")}</span></section>
   </aside>`;
 
-  main.innerHTML = head + live + gallery + tabs + `<div class="wrap p-body"><div>${overview}${measurements}${data}${agreements}${organisations}${timeline}</div>${side}</div>`;
+  main.innerHTML = head + basketBand + visual + ground() + about + dyk + gallery + toRecord
+    + live + tabs + `<div class="wrap p-body only-record"><div>${overview}${measurements}${data}${agreements}${organisations}${timeline}</div>${side}</div>`;
 
-  /* ---------- map */
+  /* ---------- the two views. Summary by default; ?view=record or a link to a row of the record opens the full record. */
+  const inRecord = (el) => !!(el && el.closest(".only-record"));
+  function setView(v, push) {
+    main.dataset.view = v;
+    document.querySelectorAll(".view-switch button").forEach((b) => { const on = b.dataset.view === v; b.classList.toggle("on", on); b.setAttribute("aria-selected", on); });
+    if (push) {
+      const u = new URL(location.href);
+      if (v === "record") u.searchParams.set("view", "record"); else u.searchParams.delete("view");
+      history.replaceState(null, "", u);
+    }
+  }
+  const hashTarget = location.hash ? document.getElementById(location.hash.slice(1)) : null;
+  setView(new URLSearchParams(location.search).get("view") === "record" || inRecord(hashTarget) ? "record" : "summary");
+  main.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-view]");
+    if (b && b.tagName === "BUTTON") {
+      setView(b.dataset.view, true);
+      if (!b.closest(".view-switch")) document.querySelector(".views").scrollIntoView();
+      return;
+    }
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const t = document.getElementById(a.getAttribute("href").slice(1));
+    if (!t) return;
+    const need = inRecord(t) ? "record" : t.closest(".only-summary") ? "summary" : null;
+    if (need && main.dataset.view !== need) {
+      e.preventDefault();
+      setView(need, true);
+      history.replaceState(null, "", a.getAttribute("href"));
+      t.scrollIntoView();
+    }
+  });
+
+  /* ---------- map: project area (or site pin) plus reference areas */
   const map = makeMap("pmap", { imagery: true });
   const ll = [loc.point[1], loc.point[0]];
+  let bounds = null;
+  const grow = (layer) => { const b = layer.getBounds(); if (b.isValid()) bounds = bounds ? bounds.extend(b) : L.latLngBounds(b.getSouthWest(), b.getNorthEast()); };
   if (loc.boundary) {
     try {
       const gj = await getJSON(loc.boundary);
       const line = NFA.cssVar("--map-mark");
-      const layer = L.geoJSON(gj, { style: { color: line, weight: 3, fillColor: line, fillOpacity: 0.15 } }).addTo(map);
-      map.fitBounds(layer.getBounds(), { padding: [24, 24] });
-    } catch { map.setView(ll, 14); }
-  } else {
-    L.marker(ll, { icon: pin(), title: p.name }).addTo(map);
-    map.setView(ll, loc.pointPrecision === "municipality" ? 14 : 16);
+      grow(L.geoJSON(gj, { style: { color: line, weight: 3, fillColor: line, fillOpacity: 0.15 } }).bindTooltip("Project area", { sticky: true }).addTo(map));
+    } catch { /* falls back to the pin below */ }
   }
+  if (!bounds) L.marker(ll, { icon: pin(), title: p.name }).addTo(map);
+  if (loc.referenceAreas) {
+    try {
+      const gj = await getJSON(loc.referenceAreas);
+      // dark casing under a white dashed line: readable on the aerial image and on the grey map
+      const casing = L.geoJSON(gj, { style: { color: NFA.cssVar("--forest"), weight: 5, opacity: 0.9, fill: false }, pointToLayer: (f, at) => L.circleMarker(at, { radius: 9 }) }).addTo(map);
+      L.geoJSON(gj, {
+        style: { color: "#fff", weight: 2, dashArray: "6 5", fillColor: "#fff", fillOpacity: 0.12 },
+        pointToLayer: (f, at) => L.circleMarker(at, { radius: 8 }),
+        onEachFeature: (f, layer) => layer.bindTooltip(`Reference area${f.properties && f.properties.name ? ": " + esc(f.properties.name) : ""}`, { sticky: true })
+      }).addTo(map);
+      grow(casing);
+      const n = (gj.features || []).length;
+      if (n) document.getElementById("legendRef").insertAdjacentHTML("beforeend", ` <span class="muted">· ${n}</span>`);
+    } catch {
+      document.getElementById("legendRef").innerHTML = `<i class="lg ref off"></i><span class="muted">Reference areas: file could not be loaded</span>`;
+    }
+  }
+  if (bounds) { if (!loc.boundary) bounds.extend(ll); map.fitBounds(bounds, { padding: [28, 28] }); }
+  else map.setView(ll, loc.pointPrecision === "municipality" ? 14 : 16);
 
 
   /* ---------- live block: grow charts when they come into view, count up the key figures, play sounds */
-  const liveEl = document.getElementById("live");
-  if (liveEl) {
+  const liveEls = [...document.querySelectorAll("#live, #didyouknow")];
+  if (liveEls.length) {
     const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const countUp = (el) => {
       const txt = el.dataset.count, m = /^([\d,]+)(.*)$/.exec(txt);
@@ -360,7 +632,7 @@
       en.target.querySelectorAll("[data-count]").forEach(countUp);
       seen.unobserve(en.target);
     }), { threshold: 0.25 });
-    liveEl.querySelectorAll(".live-band, .live-card").forEach((el) => seen.observe(el));
+    liveEls.forEach((el) => el.querySelectorAll(".live-band, .live-card").forEach((x) => seen.observe(x)));
 
     const player = new Audio();
     let playing = null;
@@ -385,8 +657,5 @@
     entries.forEach((en) => { if (en.isIntersecting) links.forEach((a) => a.classList.toggle("on", a.getAttribute("href") === `#${en.target.id}`)); });
   }, { rootMargin: "-160px 0px -60% 0px" });
   document.querySelectorAll(".block").forEach((b) => obs.observe(b));
-  if (location.hash) {
-    const t = document.getElementById(location.hash.slice(1));
-    if (t) { if (t.tagName === "TR") t.classList.add("target"); t.scrollIntoView(); }
-  }
+  if (hashTarget) { if (hashTarget.tagName === "TR") hashTarget.classList.add("target"); hashTarget.scrollIntoView(); }
 })();

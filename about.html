@@ -41,6 +41,25 @@
     </div>
   </section>
 
+  <section class="section" id="views">
+    <div class="wrap">
+      <div class="opener"><div class="label">Project pages</div><h2>Two views of one record</h2>
+        <p>Every project page opens with a summary. The full record is one click away. Both show the same project file.</p></div>
+      <div class="levels" style="grid-template-columns:repeat(2,minmax(0,1fr));max-width:980px">
+        <div><h3>Summary</h3><p>For funders, project developers, policy makers. Who develops the project, who funds it, the basket of core metrics over time, the headline indicator, the work done on the ground, the reference areas on the map. Figures that are good to know but outside the basket appear under “Did you know?”.</p></div>
+        <div><h3>Full record</h3><p>For scientists, reviewers. Methods per metric, monitoring streams, datasets with repository plus licence, agreements with key terms, documents, organisations, every step of the timeline.</p></div>
+      </div>
+      <div class="prose" style="margin-top:56px">
+        <h2>The basket</h2>
+        <p>Each project fixes a small basket of core metrics before the baseline, typically five: one structural metric plus species groups. The same metrics are measured in every round. The summary shows one row per metric, one column per measurement round. A cell stays empty until the value is measured. Nothing is estimated.</p>
+        <h2>Is biodiversity improving?</h2>
+        <p>The headline indicator is the change across the basket against the baseline, read against the reference areas. It is set in the project file by NFA, with the round it refers to plus its review status. The page does not compute it. Before the first repeat measurement it reads “Not yet measurable”.</p>
+        <h2>On the ground</h2>
+        <p>Interventions are listed with their date, next to the measurement rounds. A change in the basket can then be read against the work that came before it. Measurement, data plus review steps stay in the timeline of the full record.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="section" id="openness">
     <div class="wrap">
       <div class="opener"><div class="label">Disclosure rules</div><h2>Open by default, closed by exception</h2>
@@ -54,10 +73,12 @@
         <h2>What stays closed</h2>
         <ul>
           <li>Fees plus other commercial terms of agreements.</li>
+          <li>Funding amounts, unless the funder agrees to publish them. The amount carries its own disclosure level, apart from contract fees.</li>
+          <li>Names of funders or project developers who have not agreed to be named.</li>
           <li>Personal data without consent (revised Federal Act on Data Protection, revDSG). People are named only when they agree.</li>
           <li>Exact sites of sensitive species: published on a coarser grid.</li>
           <li>Raw audio, which can capture human speech. Detections are published instead.</li>
-          <li>Licensed third-party data that may not be redistributed.</li>
+          <li>Licensed third-party data that may not be redistributed. Reference areas appear on the map once their outlines may be published.</li>
         </ul>
         <h2>Agreements</h2>
         <p>For every agreement the register shows the parties, type, status, data licence, claim rights, term plus signing date. The signed document itself goes out on request. Partner logos are shown once the partner has confirmed their use in writing.</p>
@@ -90,7 +111,8 @@
           <li>Take the next free number: IDs count upwards across all projects (<code>NFA-001</code>, <code>NFA-002</code> …), are never reused and never change. Canton plus country go in the project file, not in the ID.</li>
           <li>Create a public repository in the <a href="https://github.com/naturefinanceaccelerator" target="_blank" rel="noopener">naturefinanceaccelerator</a> organisation named ID plus short name, e.g. <code>nfa-001-mellingen</code>, with the topic <code>nfa-project</code>.</li>
           <li>Add <code>nfa-project.json</code>, following the <a href="schema/nfa-project-0.1.schema.json">schema</a>. The <a href="https://github.com/naturefinanceaccelerator/nfa-001-mellingen" target="_blank" rel="noopener">Mellingen repository</a> is the worked example.</li>
-          <li>Put photos in <code>images/</code>, logos in <code>logos/</code>, the boundary in <code>geo/boundary.geojson</code>.</li>
+          <li>Put photos in <code>images/</code>, logos in <code>logos/</code>, the boundary in <code>geo/boundary.geojson</code>, the reference areas in <code>geo/reference-areas.geojson</code>.</li>
+          <li>Name the project developer plus the funder (<code>developers</code>, <code>funding</code>), list the measurement rounds (<code>schedule</code>), mark the basket metrics with group <code>core</code>, mark work on the ground in the timeline with type <code>intervention</code>.</li>
           <li>Add one line for the repository to <code>registry/sources.json</code> in the register repository.</li>
           <li>The register collects it at the next nightly run. Errors are listed in the workflow log; the last good version stays online.</li>
         </ol>

@@ -47,6 +47,15 @@
       .addTo(map);
   });
 
+  const TREND = { "not-yet-measurable": "Trend not yet measurable", improving: "Improving", stable: "Stable", declining: "Declining" };
+  function trend(o) {
+    if (!o) return "";
+    if (o.status === "not-yet-measurable") return `<span>${o.firstReading ? `First trend reading ${esc(o.firstReading)}` : TREND[o.status]}</span>`;
+    const v = o.value != null ? ` ${o.value > 0 ? "+" : o.value < 0 ? "−" : ""}${Math.abs(o.value).toLocaleString("en-GB", { maximumFractionDigits: 1 })} ${esc(o.unit || "%")}` : "";
+    return `<span><b>${o.status === "improving" ? "▲" : o.status === "declining" ? "▼" : "■"} ${TREND[o.status] || esc(o.status)}${v}</b>${o.verified ? "" : " · not yet reviewed"}</span>`;
+  }
+  const who = (p) => [(p.developers || []).length ? `Developer: ${p.developers.map(esc).join(", ")}` : "", (p.funders || []).length ? `${p.funders.length > 1 ? "Funders" : "Funder"}: ${p.funders.map(esc).join(", ")}` : ""].filter(Boolean);
+
   function row(p) {
     const c = p.counts;
     return `<a class="row" href="project.html?id=${encodeURIComponent(p.slug)}" data-slug="${esc(p.slug)}">
@@ -58,6 +67,13 @@
         <div class="meta-line">
           <span>${esc(NFA.places(p.cantons, p.municipality))}</span>
           <span>${esc(area(p))}</span>
+          ${who(p).map((w) => `<span>${w}</span>`).join("")}
+        </div>
+        <div class="meta-line" style="margin-top:6px">
+          ${(p.basket || []).length ? `<span>Basket of ${p.basket.length}: ${p.basket.map(esc).join(", ").toLowerCase()}</span>` : ""}
+          ${trend(p.outcome)}
+        </div>
+        <div class="meta-line" style="margin-top:6px">
           <span>${c.measurements} measurements</span>
           <span>${c.datasets} datasets</span>
           <span>${c.agreements} agreements</span>
@@ -72,7 +88,7 @@
     const list = projects.filter((p) =>
       (!fC.value || (p.cantons || []).includes(fC.value)) &&
       (!fS.value || p.stage === fS.value) &&
-      (!term || [p.name, p.id, p.summary, p.municipality, ...(p.cantons || []).map((c) => CANTONS[c] || c), ...(p.ecosystem || [])].join(" ").toLowerCase().includes(term)));
+      (!term || [p.name, p.id, p.summary, p.municipality, ...(p.cantons || []).map((c) => CANTONS[c] || c), ...(p.ecosystem || []), ...(p.developers || []), ...(p.funders || []), ...(p.basket || [])].join(" ").toLowerCase().includes(term)));
     document.getElementById("rows").innerHTML = list.length ? list.map(row).join("") : `<p class="empty">No project matches these filters.</p>`;
     Object.entries(markers).forEach(([slug, m]) => {
       const show = list.some((p) => p.slug === slug);

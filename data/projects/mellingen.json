@@ -30,7 +30,10 @@
   "boundaryStatus": "pending",
   "boundaryNote": "The surveyed project boundary (CH1903+/LV95, EPSG:2056) will be added as geo/boundary.geojson. Until then the map shows the municipality only.",
   "areaHa": 30,
-  "areaPrecision": "approximate"
+  "areaPrecision": "approximate",
+  "referenceAreas": null,
+  "referenceAreasStatus": "pending",
+  "referenceAreasNote": "Reference area outlines follow as geo/reference-areas.geojson."
  },
  "ecosystem": [
   "Farmland",
@@ -39,6 +42,18 @@
   "Forest edge"
  ],
  "landUse": "Organic farming, remains in production",
+ "developers": [],
+ "developersNote": "Name follows",
+ "funding": {
+  "funders": [],
+  "fundersNote": "Name follows",
+  "amount": {
+   "value": null,
+   "currency": "CHF",
+   "disclosure": "not-disclosed",
+   "reason": "Funding amounts are published only where the funder agrees."
+  }
+ },
  "method": {
   "name": "NFA MRV method",
   "version": "Concept v8",
@@ -49,10 +64,59 @@
  "dates": {
   "projectStart": "2026",
   "baselineT0": null,
-  "baselineT0Note": "Field baseline planned for the 2027 season",
+  "baselineT0Note": "Baseline over two years: 2026 plus 2027",
   "nextVerification": null,
   "registered": "2026-11-08",
-  "lastUpdated": "2026-11-11"
+  "lastUpdated": "2026-11-17"
+ },
+ "schedule": [
+  {
+   "id": "t0",
+   "label": "Baseline",
+   "years": "2026–2027",
+   "status": "in-progress",
+   "note": "Two base years"
+  },
+  {
+   "id": "t1",
+   "label": "t1",
+   "years": "2028",
+   "status": "planned"
+  },
+  {
+   "id": "t2",
+   "label": "t2",
+   "years": "2029",
+   "status": "planned"
+  },
+  {
+   "id": "t3",
+   "label": "t3",
+   "years": "2030",
+   "status": "planned"
+  },
+  {
+   "id": "t4",
+   "label": "t4",
+   "years": "2031",
+   "status": "planned"
+  },
+  {
+   "id": "t5",
+   "label": "t5",
+   "years": "2032",
+   "status": "planned"
+  }
+ ],
+ "outcome": {
+  "status": "not-yet-measurable",
+  "value": null,
+  "unit": "%",
+  "from": null,
+  "to": null,
+  "verified": false,
+  "method": "Median change across the five basket metrics against the baseline, read against the reference areas (Wallacea Trust approach, as adapted in the NFA MRV method).",
+  "note": "The baseline runs over 2026 plus 2027. The first reading follows the 2028 measurement."
  },
  "images": [
   {
@@ -119,7 +183,7 @@
   }
  ],
  "monitoring": {
-  "title": "Live from the site",
+  "title": "Monitoring streams",
   "provider": "synature",
   "method": "Passive acoustic monitoring: 8 recorders, one minute every two minutes, AI species detection, expert verification",
   "period": {
@@ -440,7 +504,8 @@
     "period": "Four samplers"
    }
   ],
-  "exampleNote": "Grey-tagged figures are example data: they show what the page will display, not results. They are replaced by measured values as each partner delivers."
+  "exampleNote": "Grey-tagged figures are example data: they show what the page will display, not results. They are replaced by measured values as each partner delivers.",
+  "didYouKnow": "From the sound recorders at Mellingen, autumn 2026. Good to know, not part of the basket of five."
  },
  "organisations": [
   {
@@ -575,11 +640,144 @@
     "svarmi",
     "nfa"
    ],
-   "frequency": "Baseline, then per verification event",
+   "frequency": "Per measurement round",
    "status": "planned",
    "datasets": [
     "ds-drone",
     "ds-remote"
+   ],
+   "plainName": "Habitat structure",
+   "tells": "How varied the vegetation is: height, layers, cover",
+   "indicator": "Structure index",
+   "series": [
+    {
+     "period": "t0",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t1",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t2",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t3",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t4",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t5",
+     "value": null,
+     "reference": null
+    }
+   ]
+  },
+  {
+   "id": "m-plants",
+   "metric": "Vascular plants",
+   "group": "core",
+   "method": "Vegetation relevés",
+   "provider": [],
+   "providerNote": "To be appointed",
+   "frequency": "Per measurement round",
+   "status": "planned",
+   "datasets": [
+    "ds-plants"
+   ],
+   "plainName": "Plants",
+   "tells": "Which plant species grow on the site, how many of each",
+   "indicator": "Species richness plus abundance",
+   "series": [
+    {
+     "period": "t0",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t1",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t2",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t3",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t4",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t5",
+     "value": null,
+     "reference": null
+    }
+   ]
+  },
+  {
+   "id": "m-birds",
+   "metric": "Breeding birds",
+   "group": "core",
+   "method": "Breeding bird survey, passive acoustics",
+   "provider": [
+    "synature"
+   ],
+   "frequency": "Annual breeding season",
+   "status": "planned",
+   "datasets": [
+    "ds-birds",
+    "ds-acoustics"
+   ],
+   "plainName": "Breeding birds",
+   "tells": "Which birds breed on the site, how many of each",
+   "indicator": "Species richness plus abundance",
+   "series": [
+    {
+     "period": "t0",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t1",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t2",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t3",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t4",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t5",
+     "value": null,
+     "reference": null
+    }
    ]
   },
   {
@@ -597,47 +795,89 @@
    "datasets": [
     "ds-amphibians",
     "ds-acoustics"
-   ]
-  },
-  {
-   "id": "m-birds",
-   "metric": "Breeding birds",
-   "group": "core",
-   "method": "Breeding bird survey, passive acoustics",
-   "provider": [
-    "synature"
    ],
-   "frequency": "Annual breeding season",
-   "status": "planned",
-   "datasets": [
-    "ds-birds",
-    "ds-acoustics"
+   "plainName": "Amphibians",
+   "tells": "Which frogs, toads, newts use the ponds, how many of each",
+   "indicator": "Species richness plus abundance",
+   "series": [
+    {
+     "period": "t0",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t1",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t2",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t3",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t4",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t5",
+     "value": null,
+     "reference": null
+    }
    ]
   },
   {
-   "id": "m-butterflies",
-   "metric": "Butterflies plus grasshoppers",
+   "id": "m-earthworms",
+   "metric": "Earthworms",
    "group": "core",
-   "method": "Transect counts",
+   "method": "Earthworm sampling on the project area plus reference areas; protocol being fixed",
    "provider": [],
    "providerNote": "To be appointed",
-   "frequency": "Annual season",
+   "frequency": "Per measurement round",
    "status": "planned",
    "datasets": [
-    "ds-insects"
-   ]
-  },
-  {
-   "id": "m-plants",
-   "metric": "Vascular plants",
-   "group": "core",
-   "method": "Vegetation relevés",
-   "provider": [],
-   "providerNote": "To be appointed",
-   "frequency": "Baseline, then per verification event",
-   "status": "planned",
-   "datasets": [
-    "ds-plants"
+    "ds-earthworms"
+   ],
+   "plainName": "Earthworms",
+   "tells": "Which earthworm species live in the soil, how many of each",
+   "indicator": "Species richness plus abundance",
+   "series": [
+    {
+     "period": "t0",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t1",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t2",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t3",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t4",
+     "value": null,
+     "reference": null
+    },
+    {
+     "period": "t5",
+     "value": null,
+     "reference": null
+    }
    ]
   },
   {
@@ -771,18 +1011,18 @@
    "status": "pending"
   },
   {
-   "id": "ds-insects",
-   "title": "Butterfly plus grasshopper records",
+   "id": "ds-earthworms",
+   "title": "Earthworm records",
    "provider": [],
-   "format": "Darwin Core",
+   "format": "CSV",
    "crs": "EPSG:2056",
-   "repository": "InfoSpecies (info fauna – CSCF), then GBIF",
-   "repositoryUrl": "https://www.infospecies.ch",
+   "repository": null,
    "doi": null,
    "url": null,
    "licence": "CC-BY-4.0",
    "disclosure": "public",
-   "status": "pending"
+   "status": "pending",
+   "note": "Repository to be decided with the protocol."
   },
   {
    "id": "ds-plants",
@@ -1059,42 +1299,83 @@
   {
    "date": "2026-10",
    "event": "Measurement basket fixed in MRV concept v8",
-   "status": "done"
+   "status": "done",
+   "type": "measurement"
   },
   {
    "date": "2026-10",
-   "event": "Soil sampling plus farmer training start",
-   "status": "ongoing"
+   "event": "Regenerative agriculture training on the farm starts",
+   "status": "ongoing",
+   "type": "intervention",
+   "by": [
+    "climate-farmers"
+   ]
+  },
+  {
+   "date": "2026-10",
+   "event": "Soil sampling starts",
+   "status": "ongoing",
+   "type": "measurement",
+   "by": [
+    "climate-farmers"
+   ]
+  },
+  {
+   "date": "2026-10",
+   "event": "Sound recorders in the field: 8 recorders, 2 Oct to 4 Nov",
+   "status": "done",
+   "type": "measurement",
+   "by": [
+    "synature"
+   ]
+  },
+  {
+   "date": "2026-11",
+   "event": "Basket revised: earthworms in, butterflies plus grasshoppers out",
+   "status": "done",
+   "type": "measurement"
   },
   {
    "date": "2026-11",
    "event": "Drone data route decided: OpenTopography",
-   "status": "done"
+   "status": "done",
+   "type": "data"
   },
   {
    "date": "2026-11",
    "event": "Existing amphibian records compiled",
-   "status": "ongoing"
+   "status": "ongoing",
+   "type": "measurement"
   },
   {
    "date": "2026-11",
    "event": "Entry created in the NFA Project Register",
-   "status": "done"
+   "status": "done",
+   "type": "record"
   },
   {
    "date": "2026-Q4",
    "event": "BFI Stage 1 design review submitted",
-   "status": "ongoing"
+   "status": "ongoing",
+   "type": "review"
   },
   {
    "date": "2027",
-   "event": "Field baseline (t0): amphibians, birds, butterflies, grasshoppers, plants",
-   "status": "planned"
+   "event": "Field baseline, second base year: plants, breeding birds, amphibians, earthworms",
+   "status": "planned",
+   "type": "measurement"
   },
   {
    "date": "2027",
    "event": "Baseline datasets published with DOIs",
-   "status": "planned"
+   "status": "planned",
+   "type": "data"
+  },
+  {
+   "date": "2028",
+   "event": "First repeat measurement (t1): first reading against the baseline",
+   "status": "planned",
+   "type": "measurement"
   }
  ],
  "links": [
@@ -1110,6 +1391,10 @@
  "contact": "register@nfa.ch",
  "licence": "CC-BY-4.0",
  "changelog": [
+  {
+   "date": "2026-11-17",
+   "change": "Page split into a summary plus the full record. Basket of five shown at the top: habitat structure, plants, breeding birds, amphibians, earthworms (earthworms in, butterflies plus grasshoppers out). Fields added for project developer, funder, funding amount, measurement rounds, reference areas on the map. Interventions separated from measurement steps in the timeline."
+  },
   {
    "date": "2026-11-11",
    "change": "Live acoustic monitoring added: autumn 2026 snapshot from Synature (detections, verified species, Red List birds, sounds)."
@@ -1127,6 +1412,6 @@
   "repo": "https://github.com/naturefinanceaccelerator/nfa-001-mellingen",
   "file": "https://raw.githubusercontent.com/naturefinanceaccelerator/nfa-001-mellingen/main/nfa-project.json",
   "origin": "github",
-  "collected": "2026-11-15T11:44Z"
+  "collected": "2026-11-17T07:41Z"
  }
 }
